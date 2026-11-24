@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Christ UMC — Printable Digital Bulletin QR Sign</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Georgia, serif;
+    background: #E2E8F0; color: #14162E; padding: 28px 16px;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .toolbar {
+    width: 100%; max-width: 640px; background: #FFFBEB; border: 1px solid #FDE68A;
+    padding: 12px 18px; border-radius: 12px; margin-bottom: 20px;
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    font-family: -apple-system, sans-serif; font-size: 14px; color: #92400E;
+  }
+  .toolbar button, .toolbar a {
+    background: #1E1F4B; color: #fff; border: none; padding: 9px 15px; border-radius: 8px;
+    font-weight: 700; cursor: pointer; font-size: 13px; text-decoration: none;
+  }
+  .poster {
+    width: 100%; max-width: 640px; background: #FFFDF9;
+    border: 2px solid #E7DFD1; border-radius: 28px; padding: 48px 40px;
+    text-align: center; box-shadow: 0 24px 48px -18px rgba(20,22,46,0.22);
+  }
+  .logo { width: 310px; max-width: 85%; height: auto; margin: 0 auto 24px; display: block; }
+  .eyebrow {
+    display: inline-block; font-family: -apple-system, sans-serif; font-size: 12px;
+    font-weight: 800; letter-spacing: 2px; text-transform: uppercase;
+    color: #C82829; background: #FEF2F2; border: 1px solid #FECACA;
+    padding: 5px 14px; border-radius: 999px; margin-bottom: 14px;
+  }
+  h1 {
+    font-family: Georgia, "Times New Roman", serif; font-size: 34px; line-height: 1.2;
+    color: #14162E; margin-bottom: 10px;
+  }
+  .sub {
+    font-family: -apple-system, sans-serif; font-size: 16px; color: #4A4E69;
+    max-width: 460px; margin: 0 auto 28px; line-height: 1.55;
+  }
+  .qr-frame {
+    display: inline-block; background: #FFFFFF; padding: 22px;
+    border-radius: 26px; border: 3px solid #1E1F4B;
+    box-shadow: 0 14px 32px -16px rgba(30,31,75,0.35); margin-bottom: 24px;
+  }
+  .qr-frame img { width: 270px; height: 270px; display: block; image-rendering: pixelated; }
+  .features {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+    max-width: 500px; margin: 0 auto 24px; font-family: -apple-system, sans-serif;
+  }
+  .chip {
+    background: #F1F5F9; color: #1E293B; font-size: 13px; font-weight: 700;
+    padding: 6px 13px; border-radius: 999px;
+  }
+  .url {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 14px; font-weight: 700; color: #1E1F4B;
+    background: #F8FAFC; border: 1px solid #CBD5E1; display: inline-block;
+    padding: 8px 16px; border-radius: 10px;
+  }
+  .hint {
+    font-family: -apple-system, sans-serif; font-size: 13px; color: #64748B; margin-top: 16px;
+  }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .toolbar { display: none; }
+    .poster { box-shadow: none; border: 2px solid #CBD5E1; max-width: 100%; margin: 0 auto; }
+  }
+</style>
+</head>
+<body>
+  <div class="toolbar">
+    <span><strong>Ready to Print:</strong> Place on your Welcome Table, Sanctuary Doors, or Slides!</span>
+    <div style="display:flex; gap:8px;">
+      <a href="QR_Code_Christ_UMC_Bulletin.png" download="Christ_UMC_Bulletin_QR.png">Download QR PNG</a>
+      <button onclick="window.print()">Print Sign</button>
+    </div>
+  </div>
+
+  <div class="poster">
+    <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 88">
+      <g transform="translate(14,6)">
+        <path d="M22 74 C9 62, 8 42, 19 27 C16 40, 20 51, 27 58 C21 44, 23 26, 35 12 C31 28, 34 44, 41 55 C36 63, 29 70, 22 74 Z" fill="#C82829"/>
+        <rect x="27" y="4" width="6.5" height="72" rx="1.5" fill="#14162E"/>
+        <rect x="10" y="22" width="41" height="6.2" rx="1.5" fill="#14162E"/>
+      </g>
+      <text x="76" y="34" font-family="Georgia, 'Times New Roman', serif" font-size="27" font-weight="700" letter-spacing="2.5" fill="#14162E">CHRIST</text>
+      <text x="77" y="50" font-family="-apple-system, 'Segoe UI', sans-serif" font-size="10.2" font-weight="700" letter-spacing="1.5" fill="#334155">UNITED METHODIST CHURCH</text>
+      <line x1="77" y1="57" x2="332" y2="57" stroke="#CBD5E1" stroke-width="1.2"/>
+      <text x="77" y="72" font-family="Georgia, serif" font-style="italic" font-size="13" font-weight="600" letter-spacing="0.8" fill="#C82829">Gather · Grow · Go</text>
+    </svg>
+
+    <span class="eyebrow">Welcome to Worship</span>
+    <h1>Scan for Today's<br>Digital Bulletin</h1>
+    <p class="sub">Open your phone camera and point it at the QR code below—no app download required.</p>
+
+    <div class="qr-frame">
+      <img src="QR_Code_Christ_UMC_Bulletin.png" alt="Scan QR Code for Christ UMC Digital Bulletin">
+    </div>
+
+    <div class="features">
+      <span class="chip">Order of Worship</span>
+      <span class="chip">Scripture &amp; Notes</span>
+      <span class="chip">Hymns &amp; Lyrics</span>
+      <span class="chip">Announcements</span>
+      <span class="chip">Connect Card</span>
+      <span class="chip">Prayer Requests</span>
+      <span class="chip">Online Giving</span>
+    </div>
+
+    <div class="url">leeth85.github.io/christ-umc-bulletin</div>
+    <p class="hint">Tip: Tap "Add to Home Screen" in your browser to keep the bulletin one tap away every Sunday!</p>
+  </div>
+</body>
+</html>
