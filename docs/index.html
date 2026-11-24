@@ -1,5 +1,5 @@
 <!doctype html>
-<html data-pwa-build="20261123-cumc-1" data-skin="a" data-bulletin-release="1795560000000" lang="en" data-bulletin-starting="home">
+<html data-pwa-build="20261123-cumc-1" data-skin="a" data-bulletin-release="1795580000000" lang="en" data-bulletin-starting="home">
 <head>
 <meta charset="UTF-8">
 <script id="legacy-polyfills">(function(){var E=window.Element&&Element.prototype;if(E&&!E.replaceChildren){var f=function(){while(this.firstChild)this.removeChild(this.firstChild);this.append.apply(this,arguments)};E.replaceChildren=f;if(window.DocumentFragment)DocumentFragment.prototype.replaceChildren=f;}if(window.NodeList&&!NodeList.prototype.forEach)NodeList.prototype.forEach=Array.prototype.forEach;})();</script>
@@ -797,6 +797,57 @@ html[data-skin="a"] .skin-b-only, html[data-skin="b"] .skin-a-only { display: no
   .app-content { padding: 6px 14px 24px; }
   .sh-title { font-size: 21px; }
 }
+
+/* One-Tap Household Check-In & Admin Attendance Styles */
+.checkin-card { border: 1.5px solid #BBF7D0; background: linear-gradient(180deg, #FFFFFF 0%, #F7FEE7 100%); padding: 16px 16px; }
+html[data-skin="a"] .checkin-card { background: linear-gradient(180deg, #FFFDF9 0%, #F3FAF5 100%); border-color: #C6E6D3; }
+.ci-top-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 10px; }
+.ci-greet { font-size: 15.5px; font-weight: 800; color: var(--ink); display: flex; align-items: center; gap: 7px; }
+.ci-greet i { color: var(--give-green); }
+.ci-link-btn { background: none; border: none; color: var(--connect-blue); font-size: 12px; font-weight: 700; cursor: pointer; text-decoration: underline; padding: 2px 4px; }
+.ci-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.ci-pill {
+  flex: 1 1 auto; padding: 8px 10px; border-radius: 10px; border: 1.5px solid #CBD5E1;
+  background: #fff; color: var(--ink2); font-size: 12px; font-weight: 700; cursor: pointer; text-align: center;
+}
+.ci-pill.on { background: var(--primary-navy); border-color: var(--primary-navy); color: #fff; }
+.ci-sec-label { font-size: 12px; font-weight: 700; color: var(--ink2); margin: 8px 0 6px; display: block; }
+.ci-family-chips { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 10px; }
+.ci-chip {
+  display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 999px;
+  border: 1.5px solid #CBD5E1; background: #fff; color: var(--mute); font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.15s;
+}
+.ci-chip.present { background: #DCFCE7; border-color: #16A34A; color: #14532D; }
+.ci-chip .rm { margin-left: 4px; color: #DC2626; font-weight: 800; padding: 0 3px; }
+.ci-guest-row { display: flex; align-items: center; justify-content: space-between; background: #fff; border: 1px solid var(--line); border-radius: 11px; padding: 7px 11px; margin-bottom: 10px; font-size: 12.5px; font-weight: 700; color: var(--ink2); }
+.ci-step-btns { display: inline-flex; align-items: center; gap: 8px; }
+.ci-step-btns button { width: 26px; height: 26px; border-radius: 8px; border: 1px solid #CBD5E1; background: #F8FAFC; font-weight: 800; cursor: pointer; color: var(--ink); }
+.ci-one-tap-btn {
+  width: 100%; padding: 14px 16px; border: none; border-radius: 14px;
+  background: linear-gradient(135deg, #1F7A54, #155E3F); color: #fff;
+  font-size: 15px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+  box-shadow: 0 8px 18px -8px rgba(21,128,61,0.55); transition: transform 0.1s;
+}
+.ci-one-tap-btn:active { transform: scale(0.985); }
+.ci-done-banner {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 2px 2px; font-size: 13.5px; color: #14532D;
+}
+.ci-done-banner b { font-weight: 800; display: block; font-size: 14px; }
+.ci-done-banner small { color: #166534; font-size: 12px; display: block; margin-top: 2px; }
+
+/* Admin Attendance Dashboard */
+.adm-stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; }
+.adm-stat-box { background: #fff; border: 1px solid #CBD5E1; border-radius: 13px; padding: 11px 12px; text-align: center; }
+.adm-stat-box .num { font-size: 23px; font-weight: 800; color: var(--primary-navy); line-height: 1.15; }
+.adm-stat-box .lbl { font-size: 11px; font-weight: 700; color: var(--mute); margin-top: 3px; }
+.adm-svc-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 10px; background: #fff; border: 1px solid #E2E8F0; border-radius: 9px; margin-bottom: 5px; font-size: 12.5px; font-weight: 700; color: var(--ink); }
+.adm-roster-grid { display: flex; flex-wrap: wrap; gap: 6px; max-height: 190px; overflow-y: auto; padding: 8px; background: #fff; border: 1px solid #CBD5E1; border-radius: 12px; margin-bottom: 10px; }
+.adm-roster-chip {
+  padding: 6px 11px; border-radius: 999px; border: 1px solid #CBD5E1; background: #F8FAFC;
+  font-size: 12px; font-weight: 700; color: var(--ink); cursor: pointer;
+}
+.adm-roster-chip.done { background: #DCFCE7; border-color: #86EFAC; color: #166534; cursor: default; }
 </style>
 </head>
 <body>
@@ -842,6 +893,9 @@ html[data-skin="a"] .skin-b-only, html[data-skin="b"] .skin-a-only { display: no
           <button class="sh-btn" onclick="openSermonSection('summary')"><i class="fa-solid fa-pen-to-square"></i> Sermon Notes</button>
         </div>
       </section>
+
+      <!-- One-Tap Household Attendance Check-In -->
+      <div class="card checkin-card" id="homeCheckInCard"></div>
 
       <button class="special-home-btn" id="specialRecordHomeBtn" onclick="switchTab('gratitude')" style="display:none; --p:0%;">
         <span class="sr-ring"><span id="specialHomeRing">0/0</span></span>
@@ -913,6 +967,74 @@ html[data-skin="a"] .skin-b-only, html[data-skin="b"] .skin-a-only { display: no
       </button>
 
       <!-- ==================== ADMIN SETTINGS CARDS (HOME) ==================== -->
+      <div class="card admin-only" id="adminAttendanceCard" style="border:2px solid #15803D; background:#F0FDF4;">
+        <div class="card-header" style="color:#166534;">
+          <i class="fa-solid fa-clipboard-user"></i> Live Attendance &amp; Paper Sheet Entry
+        </div>
+        <p class="admin-hint">
+          View real-time Sunday attendance (App + Paper Sheet combined), add names from the paper pew pad without double-counting, and export to Excel (CSV).
+        </p>
+
+        <div style="display:flex; gap:6px; align-items:center; margin-bottom:10px; flex-wrap:wrap;">
+          <input type="date" id="admAttDate" class="form-input-box" style="flex:1; min-width:140px; padding:9px 11px; font-size:13px;" onchange="refreshAdminAttendance()">
+          <button type="button" onclick="syncAttendanceFromSheet()" style="padding:9px 12px; background:#15803D; color:#fff; border:none; border-radius:10px; font-size:12px; font-weight:700; cursor:pointer;"><i class="fa-solid fa-arrows-rotate"></i> Sync</button>
+          <button type="button" onclick="exportAttendanceCsv()" style="padding:9px 12px; background:var(--primary-navy); color:#fff; border:none; border-radius:10px; font-size:12px; font-weight:700; cursor:pointer;"><i class="fa-solid fa-file-csv"></i> Excel CSV</button>
+        </div>
+        <p id="admAttSyncNote" style="font-size:11px; color:#166534; margin-bottom:10px;"></p>
+
+        <div class="adm-stat-grid">
+          <div class="adm-stat-box"><div class="num" id="admStatTotal">0</div><div class="lbl">Total Checked In</div></div>
+          <div class="adm-stat-box"><div class="num" id="admStatMembers">0</div><div class="lbl">Members &amp; Regular</div></div>
+          <div class="adm-stat-box"><div class="num" id="admStatGuests" style="color:#B83253;">0</div><div class="lbl">1st-Time Guests</div></div>
+          <div class="adm-stat-box"><div class="num" id="admStatSource" style="font-size:15px; padding-top:5px;">0 App · 0 Paper</div><div class="lbl">Check-In Source</div></div>
+        </div>
+
+        <label class="form-label" style="font-size:12px;">Breakdown by Worship Service</label>
+        <div id="admServiceBreakdown" style="margin-bottom:12px;"></div>
+
+        <!-- Paper Sheet Quick-Add -->
+        <div style="background:#fff; border:1px solid #BBF7D0; border-radius:14px; padding:13px; margin-bottom:12px;">
+          <div style="font-size:13.5px; font-weight:800; color:#14532D; margin-bottom:6px;">
+            <i class="fa-solid fa-pen-clip"></i> Add from Paper Attendance Sheet
+          </div>
+          <p class="admin-hint" style="margin-bottom:8px;">
+            Select the service, then tap saved members below or type/paste names from the paper sheet (one per line; write <code>John &amp; Mary Smith (2)</code> for couples/families). Anyone already checked in via phone is marked automatically!
+          </p>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
+            <select id="admPaperService" class="form-select" style="margin-bottom:0; padding:9px; font-size:12.5px;"></select>
+            <select id="admPaperStatus" class="form-select" style="margin-bottom:0; padding:9px; font-size:12.5px;">
+              <option value="Member">Member</option>
+              <option value="Regular Attender">Regular Attender</option>
+              <option value="First-Time Guest">First-Time Guest</option>
+            </select>
+          </div>
+
+          <label style="font-size:11.5px; font-weight:700; color:var(--ink2); display:block; margin-bottom:4px;">Saved Member Roster (Tap to check in from paper):</label>
+          <div class="adm-roster-grid" id="admRosterChips"></div>
+
+          <textarea id="admPaperNames" class="form-textarea-box" style="height:82px; font-size:13px; margin-bottom:8px;" placeholder="Type or paste paper sheet names (one per line)&#10;e.g., Jane Doe&#10;Mark &amp; Susan West (2)"></textarea>
+          <label style="display:flex; align-items:center; gap:7px; font-size:12px; color:var(--ink2); margin-bottom:9px; cursor:pointer;">
+            <input type="checkbox" id="admPaperSaveRoster" checked style="width:16px; height:16px;"> Remember Member/Regular names in quick-tap roster for next Sunday
+          </label>
+          <button type="button" onclick="submitPaperAttendance()" class="action-btn btn-green" style="padding:11px; font-size:13.5px;">
+            <i class="fa-solid fa-plus"></i> Add Paper Sheet Names to Attendance
+          </button>
+        </div>
+
+        <!-- Usher Total Headcount (Optional) -->
+        <details style="background:#fff; border:1px solid #CBD5E1; border-radius:12px; padding:10px 12px; margin-bottom:12px;">
+          <summary style="font-size:12.5px; font-weight:800; color:var(--ink); cursor:pointer;">Usher Room Headcount (Optional — Total Seated Count)</summary>
+          <p class="admin-hint" style="margin-top:6px;">Record the total number of people counted in the room by ushers (including those who didn't sign in by name).</p>
+          <div id="admHeadcountArea" style="display:flex; flex-direction:column; gap:6px; margin-bottom:8px;"></div>
+          <button type="button" onclick="saveUsherHeadcounts()" class="action-btn btn-primary" style="padding:9px; font-size:12.5px;">Save Usher Headcount</button>
+        </details>
+
+        <details open style="background:#fff; border:1px solid #CBD5E1; border-radius:12px; padding:10px 12px;">
+          <summary style="font-size:12.5px; font-weight:800; color:var(--ink); cursor:pointer;">Checked-In Names for This Date (<span id="admListCount">0</span>)</summary>
+          <div id="admAttendeeList" class="item-list-box" style="margin-top:10px;"></div>
+        </details>
+      </div>
+
       <div class="card admin-only" style="border:2px solid var(--primary-navy); background:#FFFBEB;">
         <div class="card-header"><i class="fa-solid fa-church"></i> [Setup] Church Profile &amp; Links</div>
         <label class="form-label">Church Name</label>
@@ -1521,7 +1643,7 @@ let currentViewerIdx = 0;
 let isHistoryView = false;
 
 const store = /*STORE_START*/{
-  "deploymentTimestamp": 1795560000000,
+  "deploymentTimestamp": 1795580000000,
   "churchName": "Christ United Methodist Church",
   "churchMotto": "Gather · Grow · Go",
   "homepageLink": "https://www.christumc.cc",
@@ -2154,7 +2276,7 @@ function cleanDeployment(root) {
   if (mainLogo) { mainLogo.removeAttribute("src"); mainLogo.style.display = "none"; }
   const bannerImg = root.querySelector("#heroBannerImg");
   if (bannerImg) bannerImg.removeAttribute("src");
-  ["musicSheetArea", "bulletinHistoryListArea", "myConfessionList", "myConnectList", "cellRequestListArea", "specialFieldsArea", "specialMySubmissions", "input-srMokjang"].forEach((id) => {
+  ["homeCheckInCard", "admAttendeeList", "admRosterChips", "admServiceBreakdown", "admHeadcountArea", "musicSheetArea", "bulletinHistoryListArea", "myConfessionList", "myConnectList", "cellRequestListArea", "specialFieldsArea", "specialMySubmissions", "input-srMokjang"].forEach((id) => {
     const n = root.querySelector("#" + id);
     if (n) n.replaceChildren();
   });
@@ -2504,9 +2626,11 @@ function updateViews() {
   renderNewBadges();
   applySkin();
   renderHomeHero();
+  renderHomeCheckIn();
   renderHomeNews();
   renderRecordsHub();
   renderBuildStamp();
+  if (isAdminMode) refreshAdminAttendance();
 }
 
 function initValues() {
@@ -2695,9 +2819,12 @@ function toggleAdmin() {
 
 /* Service Options Management */
 function renderServiceOptionsSelect() {
+  const opts = (store.serviceOptions || []).map((s) => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join("");
   const sel = document.getElementById("connectServiceSelect");
-  if (!sel) return;
-  sel.innerHTML = (store.serviceOptions || []).map((s) => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join("");
+  if (sel) sel.innerHTML = opts;
+  const pSel = document.getElementById("admPaperService");
+  if (pSel) pSel.innerHTML = opts;
+  renderHomeCheckIn();
 }
 function addServiceOption() {
   const inp = document.getElementById("input-newServiceOption");
@@ -3600,6 +3727,647 @@ function renderRecordsHub() {
 function renderBuildStamp() {
   const el = document.getElementById("buildStamp");
   if (el) el.textContent = `Build ${document.documentElement.dataset.pwaBuild || ""} · Release ${document.documentElement.dataset.bulletinRelease || ""}`;
+}
+
+/* ==================== ONE-TAP HOUSEHOLD ATTENDANCE & ADMIN DASHBOARD ==================== */
+const HOUSEHOLD_KEY = "cumc_myHouseholdProfile";
+const LOCAL_ATT_LOG_KEY = "cumc_localAttendanceLog";
+const LOCAL_ROSTER_KEY = "cumc_adminMemberRoster";
+const LOCAL_HEADCOUNT_KEY = "cumc_adminHeadcounts";
+
+let ciEditingProfile = false;
+let ciEditingToday = false;
+let ciShowContact = false;
+let ciSelectedNames = null;
+let ciExtraGuests = 0;
+let ciSelectedService = "";
+let remoteAttendanceCache = {};
+
+function getHouseholdProfile() {
+  try {
+    const raw = JSON.parse(bulletinStorage.getItem(HOUSEHOLD_KEY) || "null");
+    if (raw && typeof raw === "object") {
+      if (!raw.deviceId) raw.deviceId = "d_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+      if (!Array.isArray(raw.familyMembers)) raw.familyMembers = [];
+      return raw;
+    }
+  } catch (e) {}
+  return {
+    deviceId: "d_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+    primaryName: "",
+    status: "Member",
+    usualService: (store.serviceOptions && store.serviceOptions[0]) || "8:00 AM Service",
+    familyMembers: [],
+    email: "",
+    phone: "",
+    address: ""
+  };
+}
+
+function saveHouseholdProfile(p) {
+  bulletinStorage.setItem(HOUSEHOLD_KEY, JSON.stringify(p));
+}
+
+function readLocalAttendanceLog() {
+  try { return JSON.parse(bulletinStorage.getItem(LOCAL_ATT_LOG_KEY) || "[]"); } catch (e) { return []; }
+}
+function writeLocalAttendanceLog(list) {
+  bulletinStorage.setItem(LOCAL_ATT_LOG_KEY, JSON.stringify(list.slice(0, 500)));
+}
+function upsertLocalAttendance(entry) {
+  const list = readLocalAttendanceLog().filter((x) => x.checkInId !== entry.checkInId);
+  list.unshift(entry);
+  writeLocalAttendanceLog(list);
+}
+
+function getTodayCheckInRecord(bDate, deviceId) {
+  const cid = `${deviceId}_${bDate}`;
+  return readLocalAttendanceLog().find((x) => x.checkInId === cid) || null;
+}
+
+function renderHomeCheckIn() {
+  const box = document.getElementById("homeCheckInCard");
+  if (!box) return;
+  const bDate = store.bulletinDate || new Date().toISOString().slice(0, 10);
+  const prettyDate = formatEnglishDate(bDate, false) || bDate;
+  const profile = getHouseholdProfile();
+  const existing = profile.primaryName ? getTodayCheckInRecord(bDate, profile.deviceId) : null;
+  const services = (store.serviceOptions && store.serviceOptions.length) ? store.serviceOptions : ["8:00 AM Service", "10:00 AM (Dining Room)", "10:00 AM (Youth Room)", "Online Worship"];
+
+  if (!ciSelectedService || !services.includes(ciSelectedService)) {
+    ciSelectedService = (existing && existing.service) || profile.usualService || services[0];
+    if (!services.includes(ciSelectedService)) ciSelectedService = services[0];
+  }
+
+  // STATE 3: Already checked in for this Sunday (compact green confirmation)
+  if (existing && !ciEditingToday && !ciEditingProfile) {
+    box.innerHTML = `
+      <div class="ci-done-banner">
+        <div>
+          <b><i class="fa-solid fa-circle-check" style="color:#16A34A;"></i> Checked in for ${escapeHtml(prettyDate)}!</b>
+          <small>${escapeHtml(existing.attendees)} (${existing.count}) · ${escapeHtml(existing.service)}</small>
+        </div>
+        <button type="button" class="ci-link-btn" onclick="openEditTodayCheckIn()">Change</button>
+      </div>
+    `;
+    return;
+  }
+
+  // STATE 1: First-time setup on this phone OR editing household profile
+  if (!profile.primaryName || ciEditingProfile) {
+    const curStatus = profile.status || "Member";
+    const showContactBox = ciShowContact || curStatus === "First-Time Guest" || !!(profile.email || profile.phone || profile.address);
+    const famChips = (profile.familyMembers || []).map((f, idx) => `
+      <span class="ci-chip present" style="cursor:default;">
+        <i class="fa-solid fa-user"></i> ${escapeHtml(f)}
+        <span class="rm" style="cursor:pointer;" onclick="removeProfileFamilyMember(${idx})" title="Remove">&times;</span>
+      </span>
+    `).join("");
+
+    box.innerHTML = `
+      <div class="ci-top-row">
+        <div class="ci-greet"><i class="fa-solid fa-hand-sparkles"></i> Sunday Attendance Check-In</div>
+        ${profile.primaryName ? `<button type="button" class="ci-link-btn" onclick="ciEditingProfile=false; renderHomeCheckIn();">Cancel</button>` : ""}
+      </div>
+      <p style="font-size:12.5px; color:var(--ink2); margin-bottom:10px; line-height:1.5;">
+        Save your name once on your phone—next Sunday you can check in yourself (or your family) with <b>one single tap</b>!
+      </p>
+
+      <label class="ci-sec-label">Your Name *</label>
+      <input type="text" id="ci-inputPrimaryName" class="form-input-box" style="padding:11px 13px; margin-bottom:10px;" placeholder="e.g., TK Lee" value="${escapeHtml(profile.primaryName)}">
+
+      <label class="ci-sec-label">I am a...</label>
+      <div class="ci-pills" id="ci-statusPills">
+        ${["Member", "Regular Attender", "First-Time Guest"].map((st) => `
+          <button type="button" class="ci-pill ${curStatus === st ? "on" : ""}" onclick="selectProfileStatus('${st}')">${st === "Regular Attender" ? "Regular" : st}</button>
+        `).join("")}
+      </div>
+
+      <label class="ci-sec-label">Usual Worship Service</label>
+      <select id="ci-inputService" class="form-select" style="padding:10px 12px; margin-bottom:10px;">
+        ${services.map((s) => `<option value="${escapeHtml(s)}" ${s === ciSelectedService ? "selected" : ""}>${escapeHtml(s)}</option>`).join("")}
+      </select>
+
+      <label class="ci-sec-label">Family Members Who Worship with You (Optional)</label>
+      <div style="display:flex; gap:6px; margin-bottom:8px;">
+        <input type="text" id="ci-inputFamName" class="form-input-box" style="padding:9px 12px; font-size:13px;" placeholder="Add spouse or child's name" onkeydown="if(event.key==='Enter'){event.preventDefault();addProfileFamilyMember();}">
+        <button type="button" onclick="addProfileFamilyMember()" style="padding:9px 14px; background:var(--primary-navy); color:#fff; border:none; border-radius:10px; font-size:12.5px; font-weight:700; cursor:pointer; white-space:nowrap;">+ Add</button>
+      </div>
+      ${famChips ? `<div class="ci-family-chips">${famChips}</div>` : ""}
+
+      <div style="margin:6px 0 12px;">
+        <button type="button" class="ci-link-btn" style="padding:0;" onclick="toggleProfileContact()">
+          ${showContactBox ? "▾ Hide optional contact info" : "+ Add email, phone, or address (optional — great for 1st-Time Guests!)"}
+        </button>
+        <div id="ci-contactFields" style="display:${showContactBox ? "block" : "none"}; margin-top:8px;">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
+            <input type="email" id="ci-inputEmail" class="form-input-box" style="padding:9px 11px; font-size:13px;" placeholder="Email (optional)" value="${escapeHtml(profile.email || "")}">
+            <input type="tel" id="ci-inputPhone" class="form-input-box" style="padding:9px 11px; font-size:13px;" placeholder="Phone (optional)" value="${escapeHtml(profile.phone || "")}">
+          </div>
+          <input type="text" id="ci-inputAddress" class="form-input-box" style="padding:9px 11px; font-size:13px;" placeholder="Mailing address (optional)" value="${escapeHtml(profile.address || "")}">
+        </div>
+      </div>
+
+      <button type="button" class="ci-one-tap-btn" onclick="saveProfileAndCheckIn()">
+        <i class="fa-solid fa-check"></i> Save &amp; Check In for ${escapeHtml(prettyDate)}
+      </button>
+    `;
+    return;
+  }
+
+  // STATE 2: Returning member — 1-Tap Check-In with instant family toggle!
+  const allHousehold = [profile.primaryName, ...(profile.familyMembers || [])];
+  if (!Array.isArray(ciSelectedNames)) {
+    if (existing && existing.attendeesList) ciSelectedNames = [...existing.attendeesList];
+    else ciSelectedNames = [...allHousehold];
+  }
+  const activeCount = ciSelectedNames.length + ciExtraGuests;
+  const btnLabel = activeCount <= 1 && ciSelectedNames.length === 1
+    ? `I'm Here Today! (${ciSelectedNames[0]})`
+    : `We're Here Today! (Check In ${activeCount})`;
+
+  box.innerHTML = `
+    <div class="ci-top-row">
+      <div class="ci-greet"><i class="fa-solid fa-user-check"></i> Hi, ${escapeHtml(profile.primaryName)}!</div>
+      <button type="button" class="ci-link-btn" onclick="openProfileEditor()">Edit Name / Family</button>
+    </div>
+
+    <div class="ci-pills">
+      ${services.map((s) => `
+        <button type="button" class="ci-pill ${ciSelectedService === s ? "on" : ""}" onclick="ciSelectedService='${escapeHtml(s).replace(/'/g, "\\'")}'; renderHomeCheckIn();">${escapeHtml(s.replace(" Service", ""))}</button>
+      `).join("")}
+    </div>
+
+    ${allHousehold.length > 1 ? `
+      <span class="ci-sec-label" style="margin-top:4px;">Who is here today? (Tap a name if someone stayed home):</span>
+      <div class="ci-family-chips">
+        ${allHousehold.map((person, idx) => {
+          const isHere = ciSelectedNames.includes(person);
+          return `<button type="button" class="ci-chip ${isHere ? "present" : ""}" onclick="toggleHouseholdPerson(${idx})">
+            <i class="fa-solid ${isHere ? "fa-check" : "fa-minus"}"></i> ${escapeHtml(person)}
+          </button>`;
+        }).join("")}
+      </div>
+    ` : ""}
+
+    <div class="ci-guest-row">
+      <span>${allHousehold.length === 1 ? "Bringing family or a guest today?" : "Additional guests with you:"}</span>
+      <span class="ci-step-btns">
+        <button type="button" onclick="adjustExtraGuests(-1)">−</button>
+        <span>+${ciExtraGuests}</span>
+        <button type="button" onclick="adjustExtraGuests(1)">+</button>
+      </span>
+    </div>
+
+    <button type="button" class="ci-one-tap-btn" onclick="performOneTapCheckIn()">
+      <i class="fa-solid fa-circle-check"></i> ${escapeHtml(btnLabel)}
+    </button>
+  `;
+}
+
+function captureProfileDraftInputs(p) {
+  const n = document.getElementById("ci-inputPrimaryName");
+  const s = document.getElementById("ci-inputService");
+  const em = document.getElementById("ci-inputEmail");
+  const ph = document.getElementById("ci-inputPhone");
+  const ad = document.getElementById("ci-inputAddress");
+  if (n) p.primaryName = n.value.trim();
+  if (s) { p.usualService = s.value; ciSelectedService = s.value; }
+  if (em) p.email = em.value.trim();
+  if (ph) p.phone = ph.value.trim();
+  if (ad) p.address = ad.value.trim();
+}
+
+function selectProfileStatus(st) {
+  const p = getHouseholdProfile();
+  captureProfileDraftInputs(p);
+  p.status = st;
+  if (st === "First-Time Guest") ciShowContact = true;
+  saveHouseholdProfile(p);
+  renderHomeCheckIn();
+}
+
+function toggleProfileContact() {
+  const p = getHouseholdProfile();
+  captureProfileDraftInputs(p);
+  saveHouseholdProfile(p);
+  ciShowContact = !ciShowContact;
+  renderHomeCheckIn();
+}
+
+function addProfileFamilyMember() {
+  const p = getHouseholdProfile();
+  captureProfileDraftInputs(p);
+  const inp = document.getElementById("ci-inputFamName");
+  const val = inp ? inp.value.trim() : "";
+  if (!val) return;
+  if (!p.familyMembers.includes(val) && val !== p.primaryName) p.familyMembers.push(val);
+  saveHouseholdProfile(p);
+  ciSelectedNames = null;
+  renderHomeCheckIn();
+}
+
+function removeProfileFamilyMember(idx) {
+  const p = getHouseholdProfile();
+  captureProfileDraftInputs(p);
+  p.familyMembers.splice(idx, 1);
+  saveHouseholdProfile(p);
+  ciSelectedNames = null;
+  renderHomeCheckIn();
+}
+
+function openProfileEditor() {
+  ciEditingProfile = true;
+  renderHomeCheckIn();
+}
+
+function openEditTodayCheckIn() {
+  const profile = getHouseholdProfile();
+  const bDate = store.bulletinDate || new Date().toISOString().slice(0, 10);
+  const existing = getTodayCheckInRecord(bDate, profile.deviceId);
+  if (existing) {
+    ciSelectedService = existing.service;
+    ciExtraGuests = existing.extraGuests || 0;
+    ciSelectedNames = Array.isArray(existing.attendeesList) ? [...existing.attendeesList] : [profile.primaryName, ...(profile.familyMembers || [])];
+  }
+  ciEditingToday = true;
+  renderHomeCheckIn();
+}
+
+function toggleHouseholdPerson(idx) {
+  const p = getHouseholdProfile();
+  const all = [p.primaryName, ...(p.familyMembers || [])];
+  const target = all[idx];
+  if (!target) return;
+  if (!Array.isArray(ciSelectedNames)) ciSelectedNames = [...all];
+  if (ciSelectedNames.includes(target)) {
+    if (ciSelectedNames.length === 1 && ciExtraGuests === 0) return; // keep at least 1 person
+    ciSelectedNames = ciSelectedNames.filter((x) => x !== target);
+  } else {
+    ciSelectedNames.push(target);
+  }
+  renderHomeCheckIn();
+}
+
+function adjustExtraGuests(delta) {
+  ciExtraGuests = Math.max(0, Math.min(20, ciExtraGuests + delta));
+  renderHomeCheckIn();
+}
+
+function saveProfileAndCheckIn() {
+  const p = getHouseholdProfile();
+  captureProfileDraftInputs(p);
+  const famPending = document.getElementById("ci-inputFamName");
+  if (famPending && famPending.value.trim()) {
+    const fv = famPending.value.trim();
+    if (!p.familyMembers.includes(fv) && fv !== p.primaryName) p.familyMembers.push(fv);
+  }
+  if (!p.primaryName) {
+    alert("Please enter your name.");
+    document.getElementById("ci-inputPrimaryName").focus();
+    return;
+  }
+  saveHouseholdProfile(p);
+  ciEditingProfile = false;
+  ciSelectedNames = [p.primaryName, ...(p.familyMembers || [])];
+  ciExtraGuests = 0;
+  performOneTapCheckIn();
+}
+
+function performOneTapCheckIn() {
+  const p = getHouseholdProfile();
+  if (!p.primaryName) return;
+  const bDate = store.bulletinDate || new Date().toISOString().slice(0, 10);
+  const all = [p.primaryName, ...(p.familyMembers || [])];
+  const presentNames = Array.isArray(ciSelectedNames) && ciSelectedNames.length ? ciSelectedNames : [p.primaryName];
+  const count = presentNames.length + ciExtraGuests;
+  const attendeesStr = presentNames.join(", ") + (ciExtraGuests > 0 ? ` (+${ciExtraGuests} guest${ciExtraGuests > 1 ? "s" : ""})` : "");
+  const checkInId = `${p.deviceId}_${bDate}`;
+  const stamp = nowStamp();
+
+  p.usualService = ciSelectedService;
+  saveHouseholdProfile(p);
+
+  const entry = {
+    checkInId,
+    bulletinDate: bDate,
+    service: ciSelectedService,
+    primaryName: p.primaryName,
+    attendees: attendeesStr,
+    attendeesList: presentNames,
+    extraGuests: ciExtraGuests,
+    count,
+    status: p.status || "Member",
+    source: "App",
+    email: p.email || "",
+    phone: p.phone || "",
+    address: p.address || "",
+    submittedAt: stamp
+  };
+
+  upsertLocalAttendance(entry);
+  if (p.status !== "First-Time Guest") addNamesToLocalRoster([all.length > 1 ? `${p.primaryName} (${all.length})` : p.primaryName]);
+
+  sendToGoogleSheet({
+    type: "attendance",
+    action: "upsert",
+    checkInId,
+    date: stamp,
+    bulletinDate: bDate,
+    service: entry.service,
+    primaryName: entry.primaryName,
+    attendees: entry.attendees,
+    count: String(entry.count),
+    status: entry.status,
+    source: "App",
+    email: entry.email,
+    phone: entry.phone,
+    address: entry.address,
+    saveRoster: p.status !== "First-Time Guest" ? "1" : "0"
+  });
+
+  ciEditingToday = false;
+  renderHomeCheckIn();
+  if (isAdminMode) refreshAdminAttendance();
+}
+
+/* ==================== ADMIN ATTENDANCE STATS & PAPER SHEET MERGE ==================== */
+function readLocalRoster() {
+  try { return JSON.parse(bulletinStorage.getItem(LOCAL_ROSTER_KEY) || "[]"); } catch (e) { return []; }
+}
+function writeLocalRoster(list) {
+  const unique = [...new Set(list.map((s) => String(s || "").trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+  bulletinStorage.setItem(LOCAL_ROSTER_KEY, JSON.stringify(unique));
+  return unique;
+}
+function addNamesToLocalRoster(names) {
+  const cur = readLocalRoster();
+  return writeLocalRoster(cur.concat(names));
+}
+
+function readLocalHeadcounts() {
+  try { return JSON.parse(bulletinStorage.getItem(LOCAL_HEADCOUNT_KEY) || "{}"); } catch (e) { return {}; }
+}
+function writeLocalHeadcounts(obj) {
+  bulletinStorage.setItem(LOCAL_HEADCOUNT_KEY, JSON.stringify(obj));
+}
+
+function getMergedAttendanceForDate(dateStr) {
+  const byId = new Map();
+  (remoteAttendanceCache[dateStr] || []).forEach((r) => byId.set(r.checkInId, r));
+  readLocalAttendanceLog().filter((x) => x.bulletinDate === dateStr).forEach((r) => {
+    if (r._deleted) byId.delete(r.checkInId);
+    else byId.set(r.checkInId, r);
+  });
+  return [...byId.values()].sort((a, b) => String(b.submittedAt || "").localeCompare(String(a.submittedAt || "")));
+}
+
+async function syncAttendanceFromSheet() {
+  const dateInput = document.getElementById("admAttDate");
+  const dStr = (dateInput && dateInput.value) || store.bulletinDate || new Date().toISOString().slice(0, 10);
+  const url = (store.globalWebhook || "").trim();
+  const note = document.getElementById("admAttSyncNote");
+  if (!url) {
+    if (note) note.textContent = "Showing check-ins stored on this device. Connect Google Sheets below to sync across all congregation phones!";
+    refreshAdminAttendance(true);
+    return;
+  }
+  if (note) note.textContent = "Syncing live attendance from Google Sheets...";
+  try {
+    const sep = url.includes("?") ? "&" : "?";
+    const res = await fetch(`${url}${sep}action=stats&date=${encodeURIComponent(dStr)}&_t=${Date.now()}`);
+    const data = await res.json();
+    if (data && data.status === "SUCCESS") {
+      remoteAttendanceCache[dStr] = Array.isArray(data.records) ? data.records : [];
+      if (Array.isArray(data.roster) && data.roster.length) addNamesToLocalRoster(data.roster);
+      if (data.headcounts && typeof data.headcounts === "object") {
+        const hc = readLocalHeadcounts();
+        hc[dStr] = { ...(hc[dStr] || {}), ...data.headcounts };
+        writeLocalHeadcounts(hc);
+      }
+      if (note) note.textContent = `✓ Live synced with Google Sheets · ${new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}`;
+    }
+  } catch (e) {
+    if (note) note.textContent = "Showing local records (re-deploy GoogleSheets_Code.gs as Web App to enable two-way cloud sync).";
+  }
+  refreshAdminAttendance(true);
+}
+
+function refreshAdminAttendance(skipRemoteFetch) {
+  const dateInput = document.getElementById("admAttDate");
+  if (!dateInput) return;
+  if (!dateInput.value) dateInput.value = store.bulletinDate || new Date().toISOString().slice(0, 10);
+  const dStr = dateInput.value;
+
+  if (!skipRemoteFetch && (store.globalWebhook || "").trim() && !remoteAttendanceCache[dStr]) {
+    syncAttendanceFromSheet();
+  } else if (!(store.globalWebhook || "").trim()) {
+    const note = document.getElementById("admAttSyncNote");
+    if (note) note.textContent = "Local preview mode: connect Google Sheets URL below to aggregate check-ins from all congregation phones.";
+  }
+
+  const records = getMergedAttendanceForDate(dStr);
+  let total = 0, members = 0, guests = 0, appCnt = 0, paperCnt = 0;
+  const svcCounts = {};
+  const services = (store.serviceOptions && store.serviceOptions.length) ? store.serviceOptions : ["8:00 AM Service", "10:00 AM (Dining Room)", "10:00 AM (Youth Room)", "Online Worship"];
+  services.forEach((s) => { svcCounts[s] = 0; });
+
+  const checkedInNamesLower = new Set();
+  records.forEach((r) => {
+    const c = Math.max(1, parseInt(r.count, 10) || 1);
+    total += c;
+    if (r.status === "First-Time Guest") guests += c;
+    else members += c;
+    if (r.source === "Paper") paperCnt += c;
+    else appCnt += c;
+    svcCounts[r.service] = (svcCounts[r.service] || 0) + c;
+    if (r.primaryName) checkedInNamesLower.add(r.primaryName.toLowerCase().trim());
+    if (r.attendees) checkedInNamesLower.add(r.attendees.replace(/\s*\(\d+\)\s*$/, "").toLowerCase().trim());
+  });
+
+  document.getElementById("admStatTotal").textContent = String(total);
+  document.getElementById("admStatMembers").textContent = String(members);
+  document.getElementById("admStatGuests").textContent = String(guests);
+  document.getElementById("admStatSource").textContent = `${appCnt} App · ${paperCnt} Paper`;
+  document.getElementById("admListCount").textContent = String(records.length);
+
+  // Service Breakdown + Usher Headcount comparison
+  const hcAll = readLocalHeadcounts()[dStr] || {};
+  const svcBox = document.getElementById("admServiceBreakdown");
+  svcBox.innerHTML = Object.keys(svcCounts).map((s) => {
+    const hc = hcAll[s] ? ` <span style="color:var(--mute); font-weight:600;">(Room Headcount: ${escapeHtml(hcAll[s])})</span>` : "";
+    return `<div class="adm-svc-row"><span>${escapeHtml(s)}${hc}</span><span style="color:var(--give-green);">${svcCounts[s]} checked in</span></div>`;
+  }).join("");
+
+  // Usher Headcount Inputs
+  const hcArea = document.getElementById("admHeadcountArea");
+  hcArea.innerHTML = services.map((s, idx) => `
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
+      <span style="font-size:12px; font-weight:600; color:var(--ink);">${escapeHtml(s)}</span>
+      <input type="number" min="0" id="admHc_${idx}" data-svc="${escapeHtml(s)}" value="${escapeHtml(hcAll[s] || "")}" placeholder="0" class="form-input-box" style="width:90px; padding:6px 10px; font-size:13px; text-align:right;">
+    </div>
+  `).join("");
+
+  // Saved Member Roster Quick-Tap Chips
+  const roster = readLocalRoster();
+  const rosterBox = document.getElementById("admRosterChips");
+  if (!roster.length) {
+    rosterBox.innerHTML = '<span style="font-size:12px; color:var(--mute); padding:4px;">As members check in or get added from paper sheets, their names appear here as 1-tap buttons!</span>';
+  } else {
+    rosterBox.innerHTML = roster.map((entry) => {
+      const baseName = entry.replace(/\s*\(\d+\)\s*$/, "").trim();
+      const already = checkedInNamesLower.has(baseName.toLowerCase());
+      return `<button type="button" class="adm-roster-chip ${already ? "done" : ""}" ${already ? "disabled" : ""} onclick="quickTapRosterMember('${escapeHtml(entry).replace(/'/g, "\\'")}')">
+        ${already ? "✓ " : "+ "}${escapeHtml(entry)}
+      </button>`;
+    }).join("");
+  }
+
+  // Checked-in Attendee List (1st-Time Guests pinned at top!)
+  const sorted = [...records].sort((a, b) => {
+    if ((a.status === "First-Time Guest") !== (b.status === "First-Time Guest")) return a.status === "First-Time Guest" ? -1 : 1;
+    return String(b.submittedAt || "").localeCompare(String(a.submittedAt || ""));
+  });
+  const listBox = document.getElementById("admAttendeeList");
+  listBox.innerHTML = sorted.length ? sorted.map((r) => {
+    const isGuest = r.status === "First-Time Guest";
+    const contactLine = [r.phone, r.email, r.address].filter(Boolean).join(" · ");
+    return `
+      <div class="item-row" style="${isGuest ? "background:#FFF5F7; border-color:#FBCFE8;" : ""}">
+        <div class="row-author">
+          ${isGuest ? "🌟 <b>1ST-TIME GUEST</b> · " : ""}${escapeHtml(r.service)} · ${escapeHtml(r.source || "App")}
+        </div>
+        <div class="row-content"><b>${escapeHtml(r.attendees || r.primaryName)}</b> (${r.count || 1}) · <span style="color:var(--mute);">${escapeHtml(r.status)}</span>${contactLine ? "\nContact: " + escapeHtml(contactLine) : ""}</div>
+        <button type="button" onclick="deleteAttendanceEntry('${escapeHtml(r.checkInId).replace(/'/g, "\\'")}')" class="delete-btn" style="display:inline-flex; width:24px; height:24px; font-size:12px;">&times;</button>
+      </div>
+    `;
+  }).join("") : '<p style="text-align:center; padding:12px; color:var(--mute); font-size:12.5px;">No check-ins recorded for this date yet.</p>';
+}
+
+function parsePaperLine(rawLine) {
+  const trimmed = rawLine.trim();
+  if (!trimmed) return null;
+  const countMatch = /^(.*?)\s*\((\d+)\)\s*$/.exec(trimmed);
+  if (countMatch) {
+    return { name: countMatch[1].trim(), count: Math.max(1, parseInt(countMatch[2], 10) || 1) };
+  }
+  return { name: trimmed, count: 1 };
+}
+
+function recordPaperSingle(dStr, service, status, name, count, saveToRoster) {
+  const cleanKey = name.toLowerCase().replace(/[^a-z0-9]+/g, "_");
+  const checkInId = `paper_${dStr}_${cleanKey}`;
+  const stamp = nowStamp();
+  const entry = {
+    checkInId,
+    bulletinDate: dStr,
+    service,
+    primaryName: name,
+    attendees: name,
+    count,
+    status,
+    source: "Paper",
+    email: "",
+    phone: "",
+    address: "",
+    submittedAt: stamp
+  };
+  upsertLocalAttendance(entry);
+  if (saveToRoster && status !== "First-Time Guest") {
+    addNamesToLocalRoster([count > 1 ? `${name} (${count})` : name]);
+  }
+  sendToGoogleSheet({
+    type: "attendance",
+    action: "upsert",
+    checkInId,
+    date: stamp,
+    bulletinDate: dStr,
+    service,
+    primaryName: name,
+    attendees: name,
+    count: String(count),
+    status,
+    source: "Paper",
+    saveRoster: (saveToRoster && status !== "First-Time Guest") ? "1" : "0"
+  });
+}
+
+function quickTapRosterMember(rosterEntry) {
+  const dStr = document.getElementById("admAttDate").value || store.bulletinDate;
+  const service = document.getElementById("admPaperService").value || "8:00 AM Service";
+  const parsed = parsePaperLine(rosterEntry);
+  if (!parsed) return;
+  recordPaperSingle(dStr, service, "Member", parsed.name, parsed.count, false);
+  refreshAdminAttendance(true);
+}
+
+function submitPaperAttendance() {
+  const dStr = document.getElementById("admAttDate").value || store.bulletinDate;
+  const service = document.getElementById("admPaperService").value || "8:00 AM Service";
+  const status = document.getElementById("admPaperStatus").value || "Member";
+  const saveRoster = document.getElementById("admPaperSaveRoster").checked;
+  const raw = document.getElementById("admPaperNames").value;
+  const lines = String(raw || "").split("\n").map(parsePaperLine).filter(Boolean);
+  if (!lines.length) {
+    alert("Please type or paste at least one name from the paper attendance sheet.");
+    return;
+  }
+  lines.forEach((item) => recordPaperSingle(dStr, service, status, item.name, item.count, saveRoster));
+  document.getElementById("admPaperNames").value = "";
+  refreshAdminAttendance(true);
+}
+
+function saveUsherHeadcounts() {
+  const dStr = document.getElementById("admAttDate").value || store.bulletinDate;
+  const all = readLocalHeadcounts();
+  all[dStr] = {};
+  document.querySelectorAll("#admHeadcountArea input[data-svc]").forEach((inp) => {
+    const val = parseInt(inp.value, 10);
+    if (val > 0) all[dStr][inp.dataset.svc] = val;
+  });
+  writeLocalHeadcounts(all);
+  sendToGoogleSheet({
+    type: "headcount",
+    date: nowStamp(),
+    bulletinDate: dStr,
+    headcountsJson: JSON.stringify(all[dStr])
+  });
+  refreshAdminAttendance(true);
+  alert("Usher headcounts saved!");
+}
+
+function deleteAttendanceEntry(checkInId) {
+  if (!confirm("Remove this attendance entry?")) return;
+  const dStr = document.getElementById("admAttDate").value || store.bulletinDate;
+  if (remoteAttendanceCache[dStr]) {
+    remoteAttendanceCache[dStr] = remoteAttendanceCache[dStr].filter((x) => x.checkInId !== checkInId);
+  }
+  const list = readLocalAttendanceLog().filter((x) => x.checkInId !== checkInId);
+  writeLocalAttendanceLog(list);
+  sendToGoogleSheet({ type: "attendance", action: "delete", checkInId, bulletinDate: dStr });
+  refreshAdminAttendance(true);
+  renderHomeCheckIn();
+}
+
+function exportAttendanceCsv() {
+  const dStr = document.getElementById("admAttDate").value || store.bulletinDate || "All";
+  const records = getMergedAttendanceForDate(dStr);
+  if (!records.length) {
+    alert("No attendance records to export for this date yet.");
+    return;
+  }
+  const headers = ["Bulletin Date", "Service", "Primary Name", "Attendees Present", "Count", "Status", "Source", "Phone", "Email", "Address", "Submitted At"];
+  const esc = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+  const rows = [headers.map(esc).join(",")].concat(records.map((r) => [
+    r.bulletinDate, r.service, r.primaryName, r.attendees, r.count, r.status, r.source, r.phone || "", r.email || "", r.address || "", r.submittedAt || ""
+  ].map(esc).join(",")));
+  const blob = new Blob(["\uFEFF" + rows.join("\r\n")], { type: "text/csv;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `ChristUMC_Attendance_${dStr}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 }
 
 async function startBulletin() {
