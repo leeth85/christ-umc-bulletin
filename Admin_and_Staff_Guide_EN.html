@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Christ UMC Digital Bulletin — Staff &amp; Admin Guide</title>
+<style>
+  :root {
+    --navy: #1E1F4B;
+    --red: #C82829;
+    --green: #1F7A54;
+    --bg: #F8FAFC;
+    --card: #FFFFFF;
+    --ink: #1E293B;
+    --muted: #64748B;
+    --border: #E2E8F0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg); color: var(--ink); line-height: 1.65; padding: 32px 20px 64px;
+  }
+  .container { max-width: 860px; margin: 0 auto; }
+  .print-bar {
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    background: #FFFBEB; border: 1px solid #FDE68A; padding: 12px 18px; border-radius: 12px;
+    margin-bottom: 24px; font-size: 14px; color: #92400E;
+  }
+  .print-btn {
+    background: var(--navy); color: #fff; border: none; padding: 9px 16px; border-radius: 8px;
+    font-weight: 700; cursor: pointer; font-size: 13.5px;
+  }
+  .hero {
+    background: linear-gradient(145deg, #1E1F4B, #11132E); color: #fff;
+    border-radius: 22px; padding: 36px 32px; margin-bottom: 28px;
+  }
+  .hero .tag {
+    display: inline-block; font-size: 11.5px; font-weight: 800; letter-spacing: 1.5px;
+    text-transform: uppercase; background: rgba(255,255,255,0.16); padding: 4px 12px; border-radius: 20px;
+  }
+  .hero h1 { font-size: 30px; margin: 12px 0 8px; line-height: 1.25; }
+  .hero p { font-size: 16px; opacity: 0.9; max-width: 660px; }
+  .pills { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .pill { background: rgba(255,255,255,0.12); padding: 6px 14px; border-radius: 999px; font-size: 13px; font-weight: 600; }
+
+  .section {
+    background: var(--card); border: 1px solid var(--border); border-radius: 18px;
+    padding: 28px; margin-bottom: 22px; box-shadow: 0 4px 16px -10px rgba(15,23,42,0.08);
+  }
+  .sec-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 8px; background: var(--navy); color: #fff;
+    font-weight: 800; font-size: 14px; margin-right: 8px;
+  }
+  h2 { font-size: 21px; color: var(--navy); margin-bottom: 14px; display: flex; align-items: center; }
+  h3 { font-size: 16px; color: var(--navy); margin: 18px 0 8px; }
+  p { margin-bottom: 10px; font-size: 15px; }
+  ol, ul { padding-left: 22px; margin-bottom: 12px; }
+  li { margin-bottom: 8px; font-size: 15px; }
+  code {
+    background: #F1F5F9; color: #0F172A; padding: 2px 6px; border-radius: 6px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13.5px;
+  }
+  pre {
+    background: #0F172A; color: #F8FAFC; padding: 14px 16px; border-radius: 12px;
+    overflow-x: auto; font-size: 13px; line-height: 1.55; margin: 10px 0 14px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px; }
+  th, td { border: 1px solid var(--border); padding: 10px 12px; text-align: left; vertical-align: top; }
+  th { background: #F1F5F9; color: var(--navy); font-weight: 700; }
+  .callout {
+    border-left: 4px solid var(--navy); background: #F8FAFC; padding: 12px 16px;
+    border-radius: 0 10px 10px 0; margin: 14px 0; font-size: 14px;
+  }
+  .callout.warn { border-left-color: var(--red); background: #FEF2F2; color: #7F1D1D; }
+  .callout.tip { border-left-color: var(--green); background: #F0FDF4; color: #14532D; }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .print-bar { display: none; }
+    .section { box-shadow: none; break-inside: avoid; page-break-inside: avoid; }
+    .hero { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="print-bar">
+    <span><strong>Tip for Church Office:</strong> You can print this guide or save it as a PDF for staff &amp; volunteers.</span>
+    <button class="print-btn" onclick="window.print()">Print / Save as PDF</button>
+  </div>
+
+  <div class="hero">
+    <span class="tag">Staff &amp; Administrator Guide</span>
+    <h1>Christ United Methodist Church<br>Digital Bulletin Manual</h1>
+    <p>A mobile-friendly, offline-capable web bulletin for Sunday worship, Scripture, Hymn Lyrics, Announcements, Online Giving, Digital Connect Cards, and Prayer Requests.</p>
+    <div class="pills">
+      <span class="pill">$0/month Hosting</span>
+      <span class="pill">No App Store Required</span>
+      <span class="pill">~30 Min First Setup</span>
+      <span class="pill">~10 Min Weekly Update</span>
+    </div>
+  </div>
+
+  <!-- SECTION 1 -->
+  <div class="section">
+    <h2><span class="sec-num">1</span> Folder Contents &amp; Overview</h2>
+    <p>Your project folder contains two parts: the <code>deploy/</code> folder (uploaded to your free web host) and supporting setup files.</p>
+    <table>
+      <thead>
+        <tr><th>File / Folder</th><th>Purpose</th><th>Upload to Server?</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>deploy/index.html</code></td><td>Main bulletin app (layout, content, settings, and past archives)</td><td><strong>Yes</strong> (Updated weekly)</td></tr>
+        <tr><td><code>deploy/sw.js</code></td><td>Service worker for instant loading &amp; offline worship reading</td><td><strong>Yes</strong> (Do not edit)</td></tr>
+        <tr><td><code>deploy/recovery.html</code></td><td>Cache reset helper if a phone ever gets stuck on an old page</td><td><strong>Yes</strong> (Do not edit)</td></tr>
+        <tr><td><code>deploy/manifest.json</code></td><td>Home-screen app name &amp; theme settings</td><td><strong>Yes</strong></td></tr>
+        <tr><td><code>deploy/_headers</code></td><td>Ensures phones check for new Sunday bulletins right away</td><td><strong>Yes</strong> (Do not edit)</td></tr>
+        <tr><td><code>deploy/icon-192.png</code><br><code>deploy/icon-512.png</code></td><td>Home-screen icons (Cross &amp; Flame)</td><td><strong>Yes</strong></td></tr>
+        <tr><td><code>GoogleSheets_Code.gs</code></td><td>Google Apps Script code to collect Connect Cards, Prayers &amp; RSVPs</td><td>No (Paste into Google Sheets)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="section">
+    <h2><span class="sec-num">2</span> Step-by-Step: Free Hosting on Cloudflare Pages (One-Time, 5 Mins)</h2>
+    <p>Uploading the files inside <code>deploy/</code> to Cloudflare Pages gives your church a permanent free link such as <code>https://christumc-bulletin.pages.dev</code> (or a custom subdomain like <code>bulletin.christumc.cc</code>).</p>
+    <ol>
+      <li>Go to <strong>cloudflare.com</strong>, create a free account, and verify your email.</li>
+      <li>In the left sidebar, click <strong>Workers &amp; Pages</strong> &rarr; <strong>Create application</strong> &rarr; <strong>Pages</strong> &rarr; <strong>Upload assets (Drag and drop your files)</strong>.</li>
+      <li>Enter a short project name (lowercase letters, numbers, and hyphens only, e.g., <code>christumc-bulletin</code>) and click <strong>Create project</strong>.</li>
+      <li>Open your <code>deploy/</code> folder on your computer, select <strong>all 7 files inside <code>deploy/</code></strong> (so <code>index.html</code> is at the top level—not nested inside an extra subfolder), and drag them into the upload box.</li>
+      <li>Click <strong>Deploy site</strong>. Within seconds, your live URL (e.g., <code>https://christumc-bulletin.pages.dev</code>) is ready!</li>
+    </ol>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="section">
+    <h2><span class="sec-num">3</span> First-Time Church Setup (10 Mins)</h2>
+    <ol>
+      <li>Open your live bulletin URL on a computer browser and click <strong>Admin</strong> in the top-right corner.</li>
+      <li>Enter the initial password: <code>admin1234</code>. All editing boxes will appear across every tab.</li>
+      <li>Scroll down on the <strong>Home</strong> tab to <strong>[Setup] Church Profile &amp; Links</strong>:
+        <ul>
+          <li>Verify <strong>Church Name</strong> (<code>Christ United Methodist Church</code>), <strong>Motto</strong> (<code>Gather · Grow · Go</code>), and <strong>Website</strong> (<code>https://www.christumc.cc</code>).</li>
+          <li>Paste your direct <strong>Tithe.ly Online Giving URL</strong> into <em>Online Giving URL</em>.</li>
+          <li>Paste your <strong>YouTube or Facebook Livestream URL</strong> (if applicable) and optional <strong>CCLI License #</strong>.</li>
+          <li><strong>Change the Admin Password</strong> from <code>admin1234</code> to a new staff password.</li>
+        </ul>
+      </li>
+      <li>Optional: Under <strong>Church Logo &amp; Sermon Graphic</strong>, upload your official high-resolution PNG logo if desired (a crisp Cross &amp; Flame Christ UMC logo is already built in!).</li>
+      <li>Scroll to the bottom of Home and click <strong>Download Deployment File (index.html)</strong>.</li>
+      <li>Replace <code>deploy/index.html</code> on your computer with the newly downloaded <code>index.html</code>, then go to Cloudflare Pages &rarr; your project &rarr; <strong>Create new deployment</strong> and drag all files inside <code>deploy/</code> to publish!</li>
+    </ol>
+    <div class="callout warn">
+      <strong>Important:</strong> Edits made in Admin Mode stay only in your computer's browser until you click <strong>Download Deployment File (index.html)</strong> and upload the updated folder to Cloudflare Pages!
+    </div>
+  </div>
+
+  <!-- SECTION 4 -->
+  <div class="section">
+    <h2><span class="sec-num">4</span> Weekly 10-Minute Routine (Every Friday/Saturday)</h2>
+    <ol>
+      <li>Open your bulletin site on your computer, click <strong>Admin</strong>, and sign in.</li>
+      <li>Scroll to the bottom of Home and click <strong>Start New Bulletin for Next Week</strong>.
+        <ul>
+          <li>This safely keeps your past bulletins in the Archive, advances the Sunday date by 7 days, keeps your Order of Worship structure, and clears last week's Scripture/Sermon boxes.</li>
+        </ul>
+      </li>
+      <li>Update each tab:
+        <ul>
+          <li><strong>Home:</strong> Update song titles, Scripture reference, sermon title, and worship leaders in <em>Order of Worship</em>. Optionally upload the weekly Sermon Series graphic.</li>
+          <li><strong>Sermon:</strong> Enter <em>Sermon Title</em>, <em>Preacher</em>, <em>Scripture Reference &amp; Verses</em>, <em>Sermon Notes</em>, and <em>Reflection Questions</em>.</li>
+          <li><strong>Hymns:</strong> Paste song/hymn lyrics (or upload sheet music / slide images).</li>
+          <li><strong>News:</strong> Paste this week's church announcements.</li>
+        </ul>
+      </li>
+      <li>Return to the bottom of <strong>Home</strong> and click <strong>Download Deployment File (index.html)</strong>.</li>
+      <li>Move the downloaded <code>index.html</code> into your <code>deploy/</code> folder (replacing last week's <code>index.html</code>), then upload all files inside <code>deploy/</code> via <strong>Create new deployment</strong> on Cloudflare Pages.</li>
+    </ol>
+  </div>
+
+  <!-- SECTION 5 -->
+  <div class="section">
+    <h2><span class="sec-num">5</span> Quick Formatting Cheat Sheet</h2>
+
+    <h3>A. Order of Worship (Home Tab)</h3>
+    <p>Use <code>*</code> for each worship item, <code>|</code> for worship leaders (separate multiple service leaders with <code>;</code>), <code>†</code> for standing items, and <code>**asterisks**</code> for bold congregational responses:</p>
+<pre>†Please stand as you are able
+
+* Prelude — "Lord, I Lift Your Name on High" | Josh Hayag, Praise Team (8:00, 10:00 DR); Risë' Barker (10:00 YR)
+* †Call to Worship
+  When the world is loud and our hearts are restless, God calls us to be still and come near.
+  **We come as God's children, and the door is open to us.**
+* †Scripture — Matthew 6:6–10 | Kristin Rindt/Hannah (8:00); Mike Warren (10:00 DR)
+* Sermon — "Teach Us How to Pray" | Rev. TK Lee
+
+_New visitors are invited to see an usher after the service. We have a gift for you!_</pre>
+
+    <h3>B. Hymns &amp; Worship Lyrics (Hymns Tab)</h3>
+    <p>Start each song or hymn with <code># Song Title | Hymnal # or Performer</code>, followed by the lyrics:</p>
+<pre># †Doxology (UMH #95) | Praise God, from Whom All Blessings Flow
+Praise God, from whom all blessings flow;
+Praise him, all creatures here below;
+Praise him above, ye heavenly host;
+Praise Father, Son, and Holy Ghost. Amen.</pre>
+
+    <h3>C. Announcements (News Tab)</h3>
+    <p>Separate announcements with a blank line. Start titles with <code>1. </code>, date/location lines with <code>: </code>, and bullet points with <code>- </code>. Phone numbers, emails, and links automatically become tappable!</p>
+<pre>1. Senior Day at Christ UMC
+: Wednesday, December 16 from 10:00 AM – 1:00 PM · Dining Room
+Join every month for activities, lunch, and fellowship!
+- Please RSVP with the office (info@christumc.cc / 815.399.5910) by Monday, December 7.</pre>
+  </div>
+
+  <!-- SECTION 6 -->
+  <div class="section">
+    <h2><span class="sec-num">6</span> Connecting Google Sheets (Connect Cards, Prayers &amp; RSVPs)</h2>
+    <p>Connect Cards, Prayer Requests (Joys &amp; Concerns), and Event RSVPs can automatically populate a private Google Spreadsheet in your church Google account.</p>
+    <ol>
+      <li>Sign in to Google Drive / Google Sheets (<code>sheets.google.com</code>) with a church Gmail account and create a <strong>Blank Spreadsheet</strong> named <code>Christ UMC Bulletin Responses</code>.</li>
+      <li>In the top menu, click <strong>Extensions &rarr; Apps Script</strong>.</li>
+      <li>Delete any placeholder code in <code>Code.gs</code>, open <code>GoogleSheets_Code.gs</code> from your bulletin folder in Notepad/TextEdit, copy the entire file, paste it into Apps Script, and click <strong>Save</strong> (disk icon).</li>
+      <li>Click the blue <strong>Deploy</strong> button (top right) &rarr; <strong>New deployment</strong>.</li>
+      <li>Click the gear icon next to "Select type" &rarr; choose <strong>Web app</strong>.</li>
+      <li>Set these two fields carefully:
+        <ul>
+          <li><strong>Execute as:</strong> <code>Me</code></li>
+          <li><strong>Who has access:</strong> <code>Anyone</code> <em>(Required so congregation members don't have to sign in to submit a Connect Card or Prayer Request)</em></li>
+        </ul>
+      </li>
+      <li>Click <strong>Deploy</strong> &rarr; <strong>Authorize access</strong> &rarr; choose your Google account. If Google shows an "unverified app" warning, click <strong>Advanced</strong> &rarr; <strong>Go to project (unsafe)</strong> &rarr; <strong>Allow</strong>.</li>
+      <li>Copy the generated <strong>Web app URL</strong> (make sure it ends with <code>/exec</code>, not <code>/dev</code>).</li>
+      <li>Open your bulletin in <strong>Admin</strong> mode, paste the <code>/exec</code> URL into <strong>Google Sheets Web App URL</strong> on the Home tab, click <strong>Download Deployment File (index.html)</strong>, and upload the updated <code>deploy/</code> folder to Cloudflare Pages!</li>
+    </ol>
+    <div class="callout tip">
+      <strong>Automatic Tabs:</strong> You do not need to create columns manually! As members use the app, tabs named <code>1_VisitorLog</code>, <code>2_ConnectCards</code>, <code>3_PrayerRequests</code>, and <code>4_CareAndRSVP</code> are created automatically. Keep this Google Sheet private to authorized pastors and staff.
+    </div>
+  </div>
+
+  <!-- SECTION 7 -->
+  <div class="section">
+    <h2><span class="sec-num">7</span> Sharing with the Congregation &amp; Troubleshooting</h2>
+    <ul>
+      <li><strong>QR Code at Doors &amp; Slides:</strong> Generate a free QR code pointing to your bulletin URL and print it on welcome table signs or display it on pre-service slides.</li>
+      <li><strong>Add to Phone Home Screen (Like an App):</strong>
+        <ul>
+          <li><strong>iPhone (Safari):</strong> Tap the <strong>Share</strong> button (square with up arrow) &rarr; <strong>Add to Home Screen</strong>.</li>
+          <li><strong>Android (Chrome):</strong> Tap the top-right <strong>Menu (⋮)</strong> &rarr; <strong>Add to Home screen / Install app</strong>.</li>
+        </ul>
+      </li>
+      <li><strong>Phone stuck on last week's bulletin?</strong> Close and reopen the app, or visit <code>https://your-site.pages.dev/recovery.html</code> to refresh the cache while keeping saved personal notes.</li>
+      <li><strong>Forgot the Admin Password?</strong> Open <code>deploy/index.html</code> in Notepad/TextEdit and search for <code>"adminPassword"</code> to view it.</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>
