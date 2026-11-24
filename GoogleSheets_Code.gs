@@ -1,5 +1,5 @@
 /**
- * Christ United Methodist Church — Digital Bulletin, Age-Group Attendance & Auto-Email Engine
+ * Christ United Methodist Church — Digital Bulletin, Attendance, Welcoming & Prayer Auto-Email Engine
  * Automatically creates & populates tabs for:
  *   0_MemberRoster    — Saved member/regular names for 1-tap paper attendance entry
  *   1_Attendance      — Unified Sunday Check-Ins (Adults, Young Adults, Youth, Children, App + Paper)
@@ -10,7 +10,11 @@
  *   5_VisitorLog      — Anonymous bulletin open log
  *   [Campaign Title]  — Seasonal Gratitude / Devotional Journals
  *
- * Also supports automated weekly Sunday Attendance Summary Emails via MailApp + ScriptApp Triggers!
+ * Built-in Email Automation (via MailApp + ScriptApp Triggers):
+ *   1. Instant Welcome Email sent automatically to 1st-Time / Returning Guests who share their email
+ *   2. Instant Pastor / Welcome Team Email Alert on new Connect Cards, 1st-Time Guest Check-Ins & Care/Event RSVPs
+ *   3. Instant Prayer Request Routing (Confidential -> Pastors Only; Shared -> Pastors + Prayer Team)
+ *   4. Scheduled Weekly Sunday Post-Worship Attendance Summary Email
  */
 
 var ATT_HEADERS = [
@@ -19,12 +23,19 @@ var ATT_HEADERS = [
   'Status', 'Source', 'Phone', 'Email', 'Address', 'Submitted At', 'CheckIn ID'
 ];
 
+var DEFAULT_WELCOME_BODY =
+  'Thank you so much for worshiping with us at Christ United Methodist Church! It was truly a blessing to have you with us.\n\n' +
+  'At Christ UMC, our mission is simple: Gather · Grow · Go. Whether you are exploring faith, looking for a church home, or new to the Rockford area, there is a place for you and your family here.\n\n' +
+  'If you have any questions or would enjoy grabbing a cup of coffee with one of our pastors, simply reply to this email or reach our church office at (815) 399-5910.\n\n' +
+  'Grace and peace,\nPastoral Team · Christ United Methodist Church\nwww.christumc.cc';
+
 function doPost(e) {
   var p = (e && e.parameter) ? e.parameter : {};
   if (p.type === 'special') return saveSpecialRecord_(e);
   if (p.type === 'attendance') return saveAttendance_(p);
   if (p.type === 'headcount') return saveHeadcount_(p);
   if (p.type === 'email_config') return configureWeeklyEmail_(p);
+  if (p.type === 'automation_config') return configureAutomationSettings_(p);
   if (p.type === 'send_report_now') return sendReportNow_(p);
 
   var output = ContentService.createTextOutput();
@@ -76,6 +87,15 @@ function doPost(e) {
     var lastRow = targetSheet.getLastRow();
     targetSheet.getRange(lastRow, 1, 1, headers.length).setWrap(true).setVerticalAlignment('top');
 
+    // Trigger instant email notifications & welcoming automation (non-blocking if email fails)
+    try {
+      if (type === 'connect') handleConnectNotifications_(ss, p);
+      else if (type === 'prayer') handlePrayerNotifications_(ss, p);
+      else if (type === 'rsvp') handleRsvpNotifications_(ss, p);
+    } catch (mailErr) {
+      Logger.log('Notification email error: ' + mailErr);
+    }
+
     return output
       .setContent(JSON.stringify({ status: 'SUCCESS', sheet: sheetName }))
       .setMimeType(ContentService.MimeType.JSON);
@@ -111,6 +131,205 @@ function doGet(e) {
   }
 
   return ContentService.createTextOutput('Christ UMC Digital Bulletin, Attendance & Auto-Email Engine is active.');
+}
+
+function escHtml_(s) {
+  return String(s || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function resolveSetting_(paramVal, propKey, fallback) {
+  var v = String(paramVal !== undefined && paramVal !== null ? paramVal : '').trim();
+  if (v !== '') return v;
+  var saved = PropertiesService.getScriptProperties().getProperty(propKey);
+  if (saved !== null && String(saved).trim() !== '') return String(saved).trim();
+  return fallback || '';
+}
+
+function mergeEmailLists_(listA, listB) {
+  var raw = (String(listA || '') + ',' + String(listB || '')).split(/[,;]+/);
+  var seen = {};
+  var out = [];
+  for (var i = 0; i < raw.length; i++) {
+    var em = raw[i].trim();
+    if (em && em.indexOf('@') > 0 && !seen[em.toLowerCase()]) {
+      seen[em.toLowerCase()] = true;
+      out.push(em);
+    }
+  }
+  return out.join(', ');
+}
+
+function firstValidEmail_(listStr) {
+  var parts = String(listStr || '').split(/[,;]+/);
+  for (var i = 0; i < parts.length; i++) {
+    var em = parts[i].trim();
+    if (em && em.indexOf('@') > 0) return em;
+  }
+  return '';
+}
+
+function configureAutomationSettings_(p) {
+  var props = PropertiesService.getScriptProperties();
+  props.setProperty('CHURCH_NAME', String(p.churchName || 'Christ United Methodist Church').trim());
+  props.setProperty('WELCOME_ALERT_EMAILS', String(p.welcomeAlertEmails || '').trim());
+  props.setProperty('AUTO_WELCOME_GUEST', String(p.autoWelcomeGuest || '1').trim());
+  props.setProperty('WELCOME_EMAIL_SUBJECT', String(p.welcomeEmailSubject || '').trim());
+  props.setProperty('WELCOME_EMAIL_BODY', String(p.welcomeEmailBody || '').trim());
+  props.setProperty('PASTOR_PRAYER_EMAILS', String(p.pastorPrayerEmails || '').trim());
+  props.setProperty('PRAYER_TEAM_EMAILS', String(p.prayerTeamEmails || '').trim());
+  return ContentService.createTextOutput('saved');
+}
+
+/**
+ * 1. Connect Card: Alert Pastors/Welcoming Team + Auto-Welcome Email to New Guest
+ */
+function handleConnectNotifications_(ss, p) {
+  var churchName = resolveSetting_(p.churchName, 'CHURCH_NAME', 'Christ United Methodist Church');
+  var alertEmails = mergeEmailLists_(resolveSetting_(p.welcomeAlertEmails, 'WELCOME_ALERT_EMAILS', ''), '');
+  var status = String(p.status || 'Visitor').trim();
+  var isGuest = /guest/i.test(status);
+
+  if (alertEmails) {
+    var badgeBg = isGuest ? '#FFF1F2' : '#EFF6FF';
+    var badgeCol = isGuest ? '#BE123C' : '#1D4ED8';
+    var subjPrefix = isGuest ? '🌟 [New Guest Connect Card] ' : '🪪 [Connect Card] ';
+    var subject = subjPrefix + (p.name || 'Visitor') + ' — ' + (p.service || churchName);
+
+    var html =
+      '<div style="font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:580px;margin:0 auto;color:#1E293B;line-height:1.6;">' +
+        '<div style="background:#1E1F4B;color:#fff;padding:18px 22px;border-radius:14px 14px 0 0;">' +
+          '<div style="font-size:11px;letter-spacing:1.3px;text-transform:uppercase;opacity:0.85;">' + escHtml_(churchName) + ' · Welcoming &amp; Connect</div>' +
+          '<h2 style="margin:4px 0 0;font-size:20px;">' + escHtml_(p.name || 'New Submission') + '</h2>' +
+        '</div>' +
+        '<div style="border:1px solid #E2E8F0;border-top:none;padding:20px 22px;border-radius:0 0 14px 14px;background:#FFFFFF;">' +
+          '<span style="display:inline-block;background:' + badgeBg + ';color:' + badgeCol + ';font-weight:700;font-size:12px;padding:4px 10px;border-radius:999px;margin-bottom:14px;">' +
+            escHtml_(status) + ' · ' + escHtml_(p.service || 'Sunday Worship') +
+          '</span>' +
+          '<table style="width:100%;border-collapse:collapse;font-size:14px;margin-bottom:14px;">' +
+            '<tr><td style="padding:6px 0;color:#64748B;width:130px;"><b>Bulletin Date:</b></td><td style="padding:6px 0;">' + escHtml_(p.bulletinDate || p.date || '') + '</td></tr>' +
+            '<tr><td style="padding:6px 0;color:#64748B;"><b>Email:</b></td><td style="padding:6px 0;">' + (p.email ? '<a href="mailto:' + escHtml_(p.email) + '">' + escHtml_(p.email) + '</a>' : '—') + '</td></tr>' +
+            '<tr><td style="padding:6px 0;color:#64748B;"><b>Phone:</b></td><td style="padding:6px 0;">' + (p.phone ? '<a href="tel:' + escHtml_(p.phone) + '">' + escHtml_(p.phone) + '</a>' : '—') + '</td></tr>' +
+            '<tr><td style="padding:6px 0;color:#64748B;vertical-align:top;"><b>Next Steps:</b></td><td style="padding:6px 0;">' + escHtml_(p.interests || 'None selected') + '</td></tr>' +
+            '<tr><td style="padding:6px 0;color:#64748B;vertical-align:top;"><b>Comments:</b></td><td style="padding:6px 0;white-space:pre-wrap;">' + escHtml_(p.notes || '—') + '</td></tr>' +
+          '</table>' +
+          '<a href="' + ss.getUrl() + '" style="display:inline-block;background:#1E1F4B;color:#fff;text-decoration:none;padding:10px 16px;border-radius:9px;font-weight:700;font-size:13px;">Open 2_ConnectCards in Google Sheets</a>' +
+        '</div>' +
+      '</div>';
+
+    var mailOpts = { to: alertEmails, subject: subject, htmlBody: html };
+    if (p.email && p.email.indexOf('@') > 0) mailOpts.replyTo = String(p.email).trim();
+    MailApp.sendEmail(mailOpts);
+  }
+
+  // Send Automated Warm Welcome Email to Guest if enabled & guest shared an email
+  var autoWelcome = resolveSetting_(p.autoWelcomeGuest, 'AUTO_WELCOME_GUEST', '1');
+  var guestEmail = String(p.email || '').trim();
+  if (isGuest && autoWelcome === '1' && guestEmail && guestEmail.indexOf('@') > 0) {
+    sendGuestWelcomeEmail_(guestEmail, p.name, churchName, alertEmails, p);
+  }
+}
+
+function sendGuestWelcomeEmail_(guestEmail, guestName, churchName, replyToList, p) {
+  var subj = resolveSetting_(p.welcomeEmailSubject, 'WELCOME_EMAIL_SUBJECT', 'Welcome to ' + churchName + '!');
+  var bodyRaw = resolveSetting_(p.welcomeEmailBody, 'WELCOME_EMAIL_BODY', DEFAULT_WELCOME_BODY);
+  var firstName = String(guestName || '').trim().split(/\s+/)[0] || 'Friend';
+  var bodyHtml = escHtml_(bodyRaw).replace(/\r?\n/g, '<br>');
+
+  var html =
+    '<div style="font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:580px;margin:0 auto;color:#1E293B;line-height:1.7;">' +
+      '<div style="background:#1E1F4B;color:#fff;padding:24px;border-radius:16px 16px 0 0;text-align:center;">' +
+        '<div style="font-size:11px;letter-spacing:1.8px;text-transform:uppercase;opacity:0.85;">Gather · Grow · Go</div>' +
+        '<h2 style="margin:6px 0 0;font-size:22px;">' + escHtml_(churchName) + '</h2>' +
+      '</div>' +
+      '<div style="border:1px solid #E2E8F0;border-top:none;padding:24px;border-radius:0 0 16px 16px;background:#FFFFFF;font-size:15px;">' +
+        '<p style="margin-top:0;">Dear <b>' + escHtml_(firstName) + '</b>,</p>' +
+        '<div>' + bodyHtml + '</div>' +
+      '</div>' +
+    '</div>';
+
+  var opts = {
+    to: guestEmail,
+    name: churchName,
+    subject: subj,
+    htmlBody: html
+  };
+  var replyEm = firstValidEmail_(replyToList);
+  if (replyEm) opts.replyTo = replyEm;
+  MailApp.sendEmail(opts);
+}
+
+/**
+ * 2. Prayer Request: Respect Confidential (Pastors Only) vs Pastors & Prayer Team
+ */
+function handlePrayerNotifications_(ss, p) {
+  var churchName = resolveSetting_(p.churchName, 'CHURCH_NAME', 'Christ United Methodist Church');
+  var pastorEmails = resolveSetting_(p.pastorPrayerEmails, 'PASTOR_PRAYER_EMAILS', '');
+  var teamEmails = resolveSetting_(p.prayerTeamEmails, 'PRAYER_TEAM_EMAILS', '');
+  var sharing = String(p.sharing || 'Pastors & Prayer Team').trim();
+  var isConfidential = /confidential/i.test(sharing);
+  var isPraise = /joy|praise/i.test(sharing);
+
+  var recipients = isConfidential
+    ? mergeEmailLists_(pastorEmails, '')
+    : mergeEmailLists_(pastorEmails, teamEmails);
+  if (!recipients) return;
+
+  var headerBg = isConfidential ? '#881337' : (isPraise ? '#15803D' : '#1E1F4B');
+  var tagPrefix = isConfidential
+    ? '🔒 [CONFIDENTIAL — Pastors Only] '
+    : (isPraise ? '🙌 [Joy & Praise Report] ' : '🙏 [Prayer Request] ');
+  var subject = tagPrefix + (p.author || 'Anonymous') + ' — ' + churchName;
+
+  var html =
+    '<div style="font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:580px;margin:0 auto;color:#1E293B;line-height:1.6;">' +
+      '<div style="background:' + headerBg + ';color:#fff;padding:18px 22px;border-radius:14px 14px 0 0;">' +
+        '<div style="font-size:11px;letter-spacing:1.3px;text-transform:uppercase;opacity:0.9;">' + escHtml_(sharing) + '</div>' +
+        '<h2 style="margin:4px 0 0;font-size:20px;">Prayer from ' + escHtml_(p.author || 'Anonymous') + '</h2>' +
+      '</div>' +
+      '<div style="border:1px solid #E2E8F0;border-top:none;padding:20px 22px;border-radius:0 0 14px 14px;background:#FFFFFF;">' +
+        (isConfidential ? '<p style="background:#FFF1F2;border:1px solid #FECDD3;color:#9F1239;padding:10px 12px;border-radius:10px;font-size:12.5px;font-weight:700;margin-top:0;">🔒 Confidential Pastoral Prayer — Sent strictly to pastors only (not shared with the Prayer Team).</p>' : '') +
+        (p.prayer ? '<div style="margin-bottom:14px;"><div style="font-size:12px;font-weight:700;color:#64748B;text-transform:uppercase;margin-bottom:4px;">Prayer Request / Joy or Concern</div><div style="background:#F8FAFC;padding:13px 15px;border-radius:11px;font-size:15px;white-space:pre-wrap;">' + escHtml_(p.prayer) + '</div></div>' : '') +
+        (p.grace ? '<div style="margin-bottom:14px;"><div style="font-size:12px;font-weight:700;color:#64748B;text-transform:uppercase;margin-bottom:4px;">Personal Sermon Reflection</div><div style="background:#FFFBEB;padding:12px 15px;border-radius:11px;font-size:14px;white-space:pre-wrap;">' + escHtml_(p.grace) + '</div></div>' : '') +
+        '<p style="font-size:12.5px;color:#64748B;margin:0 0 14px;">Date: ' + escHtml_(p.bulletinDate || p.date || '') + (p.sermonTitle ? ' · Message: ' + escHtml_(p.sermonTitle) : '') + '</p>' +
+        '<a href="' + ss.getUrl() + '" style="display:inline-block;background:#1E1F4B;color:#fff;text-decoration:none;padding:10px 16px;border-radius:9px;font-weight:700;font-size:13px;">Open 3_PrayerRequests in Google Sheets</a>' +
+      '</div>' +
+    '</div>';
+
+  MailApp.sendEmail({ to: recipients, subject: subject, htmlBody: html });
+}
+
+/**
+ * 3. Pastoral Care & Event RSVP Alert
+ */
+function handleRsvpNotifications_(ss, p) {
+  var churchName = resolveSetting_(p.churchName, 'CHURCH_NAME', 'Christ United Methodist Church');
+  var recipients = mergeEmailLists_(
+    resolveSetting_(p.welcomeAlertEmails, 'WELCOME_ALERT_EMAILS', ''),
+    resolveSetting_(p.pastorPrayerEmails, 'PASTOR_PRAYER_EMAILS', '')
+  );
+  if (!recipients) return;
+
+  var subject = '📅 [' + (p.requestType || 'Care / Event RSVP') + '] ' + (p.author || '') + ' — ' + churchName;
+  var html =
+    '<div style="font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:580px;margin:0 auto;color:#1E293B;line-height:1.6;">' +
+      '<div style="background:#0369A1;color:#fff;padding:18px 22px;border-radius:14px 14px 0 0;">' +
+        '<div style="font-size:11px;letter-spacing:1.3px;text-transform:uppercase;opacity:0.9;">Pastoral Care &amp; Event RSVP</div>' +
+        '<h2 style="margin:4px 0 0;font-size:20px;">' + escHtml_(p.requestType || 'RSVP') + '</h2>' +
+      '</div>' +
+      '<div style="border:1px solid #E2E8F0;border-top:none;padding:20px 22px;border-radius:0 0 14px 14px;background:#FFFFFF;font-size:14px;">' +
+        '<p style="margin:0 0 8px;"><b>Name:</b> ' + escHtml_(p.author || '') + '</p>' +
+        '<p style="margin:0 0 8px;"><b>Contact:</b> ' + escHtml_(p.contact || '') + '</p>' +
+        '<p style="margin:0 0 8px;"><b>Preferred Time:</b> ' + escHtml_(p.schedule || 'Flexible') + '</p>' +
+        '<p style="margin:0 0 16px;white-space:pre-wrap;"><b>Details:</b> ' + escHtml_(p.text || '—') + '</p>' +
+        '<a href="' + ss.getUrl() + '" style="display:inline-block;background:#0369A1;color:#fff;text-decoration:none;padding:10px 16px;border-radius:9px;font-weight:700;font-size:13px;">Open 4_CareAndRSVP in Google Sheets</a>' +
+      '</div>' +
+    '</div>';
+
+  MailApp.sendEmail({ to: recipients, subject: subject, htmlBody: html });
 }
 
 function readAttendanceRecords_(ss, targetDate) {
@@ -172,8 +391,10 @@ function ensureSheetWithHeaders_(ss, name, headers, bg) {
 function saveAttendance_(p) {
   var lock = LockService.getScriptLock();
   lock.waitLock(20000);
+  var isNewFirstTimeGuest = false;
+  var ss;
   try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    ss = SpreadsheetApp.getActiveSpreadsheet();
     var sheet = ensureSheetWithHeaders_(ss, '1_Attendance', ATT_HEADERS, '#DCFCE7');
     var checkInId = String(p.checkInId || '');
     var idCol = 16;
@@ -216,6 +437,9 @@ function saveAttendance_(p) {
       sheet.getRange(foundRow, 1, 1, ATT_HEADERS.length).setValues([row]);
     } else {
       sheet.appendRow(row);
+      if (p.status === 'First-Time Guest' && p.source !== 'Paper') {
+        isNewFirstTimeGuest = true;
+      }
     }
 
     if (p.saveRoster === '1' && p.primaryName) {
@@ -233,6 +457,30 @@ function saveAttendance_(p) {
   } finally {
     lock.releaseLock();
   }
+
+  // If a First-Time Guest checked in on their phone for the first time today, trigger Welcome Alert + Auto-Welcome Email!
+  if (isNewFirstTimeGuest && ss) {
+    try {
+      handleConnectNotifications_(ss, {
+        name: p.attendees || p.primaryName || 'Guest',
+        service: p.service || '',
+        status: 'First-Time Guest (1-Tap Check-In)',
+        bulletinDate: p.bulletinDate || '',
+        email: p.email || '',
+        phone: p.phone || '',
+        interests: 'Checked in via Home 1-Tap Attendance',
+        notes: p.address ? ('Address: ' + p.address) : '',
+        churchName: p.churchName,
+        welcomeAlertEmails: p.welcomeAlertEmails,
+        autoWelcomeGuest: p.autoWelcomeGuest,
+        welcomeEmailSubject: p.welcomeEmailSubject,
+        welcomeEmailBody: p.welcomeEmailBody
+      });
+    } catch (guestMailErr) {
+      Logger.log('1st-time guest check-in email error: ' + guestMailErr);
+    }
+  }
+
   return ContentService.createTextOutput('ok');
 }
 
@@ -318,7 +566,6 @@ function sendWeeklySundayAttendanceEmail() {
 
 function sendAttendanceSummaryEmailForDate_(emails, dateStr, churchName) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
-  // If no records exist for exact todayStr (e.g., testing on a weekday), fall back to the latest date in 1_Attendance
   var targetDate = dateStr;
   var records = readAttendanceRecords_(ss, targetDate);
   if (records.length === 0) {
@@ -354,13 +601,13 @@ function sendAttendanceSummaryEmailForDate_(emails, dateStr, churchName) {
 
   var hc = readHeadcountsForDate_(ss, targetDate);
   var svcHtml = Object.keys(byService).map(function(s) {
-    var hcNote = hc[s] ? ' <span style="color:#64748B;">(Usher Room Count: ' + hc[s] + ')</span>' : '';
-    return '<li style="margin-bottom:5px;"><b>' + s + ':</b> ' + byService[s] + ' checked in' + hcNote + '</li>';
+    var hcNote = hc[s] ? ' <span style="color:#64748B;">(Usher Room Count: ' + escHtml_(hc[s]) + ')</span>' : '';
+    return '<li style="margin-bottom:5px;"><b>' + escHtml_(s) + ':</b> ' + byService[s] + ' checked in' + hcNote + '</li>';
   }).join('') || '<li>No check-ins recorded yet.</li>';
 
   var guestHtml = firstTimeGuests.length ? firstTimeGuests.map(function(g) {
     var contact = [g.phone, g.email, g.address].filter(Boolean).join(' · ') || 'No contact info provided';
-    return '<li style="margin-bottom:6px;"><b>' + g.attendees + '</b> (' + g.service + ') — ' + contact + '</li>';
+    return '<li style="margin-bottom:6px;"><b>' + escHtml_(g.attendees) + '</b> (' + escHtml_(g.service) + ') — ' + escHtml_(contact) + '</li>';
   }).join('') : '<li style="color:#64748B;">No first-time guests recorded for this date.</li>';
 
   var sheetUrl = ss.getUrl();
@@ -370,8 +617,8 @@ function sendAttendanceSummaryEmailForDate_(emails, dateStr, churchName) {
     '<div style="font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:600px;margin:0 auto;color:#1E293B;line-height:1.6;">' +
       '<div style="background:#1E1F4B;color:#fff;padding:22px 24px;border-radius:16px 16px 0 0;">' +
         '<div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;opacity:0.85;">Weekly Worship Attendance Report</div>' +
-        '<h2 style="margin:6px 0 2px;font-size:22px;">' + churchName + '</h2>' +
-        '<div style="font-size:14px;opacity:0.9;">Service Date: <b>' + (targetDate || 'N/A') + '</b></div>' +
+        '<h2 style="margin:6px 0 2px;font-size:22px;">' + escHtml_(churchName) + '</h2>' +
+        '<div style="font-size:14px;opacity:0.9;">Service Date: <b>' + escHtml_(targetDate || 'N/A') + '</b></div>' +
       '</div>' +
       '<div style="border:1px solid #E2E8F0;border-top:none;padding:22px 24px;border-radius:0 0 16px 16px;background:#FFFFFF;">' +
         '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px;">' +
@@ -448,7 +695,8 @@ function saveSpecialRecord_(e) {
     if (entryId && sheet.getLastRow() > 1) {
       var ids = sheet.getRange(2, idCol, sheet.getLastRow() - 1, 1).getValues();
       for (var i = ids.length - 1; i >= 0; i--) {
-        if (String(ids[i][0]) === entryId) { foundRow = i + 2; break; }
+        if (String(ids[i][0]) === entryId) foundRow = i + 2;
+        if (foundRow) break;
       }
     }
 

@@ -1,5 +1,5 @@
 <!doctype html>
-<html data-pwa-build="20261123-cumc-1" data-skin="a" data-bulletin-release="1795600000000" lang="en" data-bulletin-starting="home">
+<html data-pwa-build="20261124-cumc-2" data-skin="a" data-bulletin-release="1795610000000" lang="en" data-bulletin-starting="home">
 <head>
 <meta charset="UTF-8">
 <script id="legacy-polyfills">(function(){var E=window.Element&&Element.prototype;if(E&&!E.replaceChildren){var f=function(){while(this.firstChild)this.removeChild(this.firstChild);this.append.apply(this,arguments)};E.replaceChildren=f;if(window.DocumentFragment)DocumentFragment.prototype.replaceChildren=f;}if(window.NodeList&&!NodeList.prototype.forEach)NodeList.prototype.forEach=Array.prototype.forEach;})();</script>
@@ -848,6 +848,45 @@ html[data-skin="a"] .checkin-card { background: linear-gradient(180deg, #FFFDF9 
   font-size: 12px; font-weight: 700; color: var(--ink); cursor: pointer;
 }
 .adm-roster-chip.done { background: #DCFCE7; border-color: #86EFAC; color: #166534; cursor: default; }
+
+/* Install App / Add to Home Screen Banner & Guide */
+.install-app-banner {
+  display: none; align-items: center; gap: 11px; width: 100%;
+  background: linear-gradient(135deg, #1E1F4B 0%, #2D3277 100%); color: #fff;
+  border-radius: 16px; padding: 12px 14px; margin-bottom: 14px;
+  box-shadow: 0 8px 20px -8px rgba(30,31,75,0.5); cursor: pointer; position: relative;
+}
+.install-app-banner .ib-icon {
+  width: 38px; height: 38px; border-radius: 11px; background: rgba(255,255,255,0.16);
+  display: grid; place-items: center; font-size: 18px; flex: none;
+}
+.install-app-banner .ib-txt { flex: 1; min-width: 0; text-align: left; }
+.install-app-banner .ib-txt b { display: block; font-size: 13.5px; font-weight: 800; line-height: 1.3; }
+.install-app-banner .ib-txt small { display: block; font-size: 11.5px; opacity: 0.88; margin-top: 2px; line-height: 1.35; }
+.install-app-banner .ib-cta {
+  background: #fff; color: #1E1F4B; font-size: 11.5px; font-weight: 800;
+  padding: 6px 10px; border-radius: 9px; flex: none;
+}
+.install-app-banner .ib-close {
+  background: transparent; border: none; color: rgba(255,255,255,0.72);
+  font-size: 18px; line-height: 1; padding: 4px; cursor: pointer; flex: none;
+}
+.ig-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+.ig-tab {
+  flex: 1; padding: 9px 10px; border-radius: 11px; border: 1.5px solid #CBD5E1;
+  background: #F8FAFC; color: var(--ink2); font-size: 12.5px; font-weight: 800; cursor: pointer;
+}
+.ig-tab.on { background: var(--primary-navy); border-color: var(--primary-navy); color: #fff; }
+.ig-step {
+  display: flex; align-items: flex-start; gap: 11px; background: #F8FAFC;
+  border: 1px solid #E2E8F0; border-radius: 14px; padding: 11px 13px; margin-bottom: 8px;
+}
+.ig-num {
+  width: 24px; height: 24px; border-radius: 50%; background: var(--primary-navy); color: #fff;
+  font-size: 12px; font-weight: 800; display: grid; place-items: center; flex: none; margin-top: 1px;
+}
+.ig-body { font-size: 13px; line-height: 1.5; color: var(--ink); }
+.ig-body b { font-weight: 800; }
 </style>
 </head>
 <body>
@@ -893,6 +932,17 @@ html[data-skin="a"] .checkin-card { background: linear-gradient(180deg, #FFFDF9 
           <button class="sh-btn" onclick="openSermonSection('summary')"><i class="fa-solid fa-pen-to-square"></i> Sermon Notes</button>
         </div>
       </section>
+
+      <!-- Save App to Home Screen Banner (Auto-hides once installed) -->
+      <div class="install-app-banner" id="installAppBanner" onclick="triggerInstallApp()">
+        <div class="ib-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
+        <div class="ib-txt">
+          <b>Save Bulletin App to Your Phone</b>
+          <small>Open next Sunday in 1 tap — no QR code needed!</small>
+        </div>
+        <span class="ib-cta" id="installBannerCta">How to Add</span>
+        <button type="button" class="ib-close" onclick="dismissInstallBanner(event)" aria-label="Dismiss">&times;</button>
+      </div>
 
       <!-- One-Tap Household Attendance Check-In -->
       <div class="card checkin-card" id="homeCheckInCard"></div>
@@ -1100,10 +1150,46 @@ html[data-skin="a"] .checkin-card { background: linear-gradient(180deg, #FFFDF9 
       </div>
 
       <div class="card admin-only" style="border:2px solid #2563EB; background:#EFF6FF;">
-        <div class="card-header" style="color:#1D4ED8;"><i class="fa-solid fa-table"></i> Google Sheets Web App URL (Connect &amp; Prayer)</div>
-        <p class="admin-hint">Paste your Google Apps Script <code>/exec</code> Web App URL below so Connect Cards, Prayer Requests, and RSVPs automatically save to your church Google Sheet.</p>
+        <div class="card-header" style="color:#1D4ED8;"><i class="fa-solid fa-table"></i> Google Sheets &amp; Email Automation</div>
+        <p class="admin-hint">Paste your Google Apps Script <code>/exec</code> Web App URL below so Attendance, Connect Cards, Prayer Requests, and RSVPs automatically save to your church Google Sheet and trigger instant email alerts.</p>
+        <label class="form-label">Google Apps Script Web App URL (<code>/exec</code>)</label>
         <input type="text" id="input-globalWebhook" class="admin-box" placeholder="https://script.google.com/macros/s/.../exec" oninput="syncWebhookInput(this.value)">
-        <button type="button" onclick="resetWebhookURL()" class="btn-danger" style="width:100%;">Clear Cached Sheet URL on This Device</button>
+        <button type="button" onclick="resetWebhookURL()" class="btn-danger" style="width:100%; margin-bottom:14px;">Clear Cached Sheet URL on This Device</button>
+
+        <div style="background:#FFFFFF; border:1px solid #BFDBFE; border-radius:14px; padding:13px;">
+          <div style="font-size:13.5px; font-weight:800; color:#1E1F4B; margin-bottom:6px;">
+            <i class="fa-solid fa-paper-plane" style="color:#2563EB;"></i> Instant Welcoming &amp; Prayer Email Routing
+          </div>
+          <p class="admin-hint" style="margin-bottom:10px;">
+            Automatically routes new Connect Cards, 1st-Time Guests, Prayer Requests, and Care RSVPs to the right pastors/teams, and sends an instant Welcome Email to new visitors!
+          </p>
+
+          <label class="form-label">Welcoming &amp; Connect Card Alert Email(s) (Pastors / Welcome Team)</label>
+          <input type="text" id="input-welcomeAlertEmails" class="admin-box" placeholder="beatuifulchina2010@gmail.com, welcome@christumc.cc" oninput="saveData('welcomeAlertEmails', this.value)">
+
+          <label style="display:flex; align-items:center; gap:8px; font-size:12.5px; font-weight:700; color:var(--ink); margin:4px 0 10px; cursor:pointer;">
+            <input type="checkbox" id="input-autoWelcomeGuest" checked style="width:17px; height:17px;" onchange="saveData('autoWelcomeGuest', this.checked)">
+            Automatically send a Welcome Email to Guests who share their email
+          </label>
+
+          <label class="form-label">Auto-Welcome Email Subject (Sent to New Guests)</label>
+          <input type="text" id="input-welcomeEmailSubject" class="admin-box" placeholder="Welcome to Christ United Methodist Church!" oninput="saveData('welcomeEmailSubject', this.value)">
+
+          <label class="form-label">Auto-Welcome Email Message Body</label>
+          <textarea id="input-welcomeEmailBody" class="admin-area" style="height:125px;" oninput="saveData('welcomeEmailBody', this.value)"></textarea>
+
+          <hr style="border:none; border-top:1px solid #E2E8F0; margin:12px 0;">
+
+          <label class="form-label">Pastors' Prayer &amp; Care Email(s) (Receives ALL Prayers, incl. Confidential)</label>
+          <input type="text" id="input-pastorPrayerEmails" class="admin-box" placeholder="beatuifulchina2010@gmail.com" oninput="saveData('pastorPrayerEmails', this.value)">
+
+          <label class="form-label">Prayer Team Email(s) (Optional — Never receives "Confidential — Pastors Only")</label>
+          <input type="text" id="input-prayerTeamEmails" class="admin-box" placeholder="prayerteam@christumc.cc (leave blank if pastors only)" oninput="saveData('prayerTeamEmails', this.value)">
+
+          <button type="button" onclick="saveEmailAutomationConfig()" class="action-btn" style="background:#2563EB; color:#fff; padding:11px; font-size:13px;">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Save &amp; Sync Email Routing to Google Sheets
+          </button>
+        </div>
       </div>
 
       <div class="card admin-only" style="border:2px solid var(--primary-navy); background:#F8FAFC;">
@@ -1190,7 +1276,7 @@ html[data-skin="a"] .checkin-card { background: linear-gradient(180deg, #FFFDF9 
       <div class="card admin-only" id="adminDeployCard" style="border:2px solid var(--primary-navy); background:#F8FAFC;">
         <div class="card-header"><i class="fa-solid fa-cloud-arrow-down"></i> Publish &amp; Next Week Prep</div>
         <p class="admin-hint">
-          <b>1. Download Deployment File (index.html):</b> Packages all your edits into a ready-to-publish <code>index.html</code> file. Upload it to Cloudflare Pages so everyone sees the new bulletin.<br>
+          <b>1. Download Deployment File (index.html):</b> Packages all your edits into a ready-to-publish <code>index.html</code> file. Upload it to your GitHub Pages repository (<code>docs/index.html</code>) so everyone sees the new bulletin.<br>
           <b>2. Start New Bulletin:</b> Safely archives past bulletins and resets weekly sermon/scripture fields for next Sunday while keeping your Church Profile &amp; Liturgy structure.
         </p>
         <p id="buildStamp" style="font-size:11px; color:var(--mute); margin-bottom:10px;"></p>
@@ -1323,6 +1409,10 @@ html[data-skin="a"] .checkin-card { background: linear-gradient(180deg, #FFFDF9 
         <button class="hub-card" onclick="openChurchHomepage()">
           <span class="hi" style="background:#E2E8F0; color:#1E293B;"><i class="fa-solid fa-globe"></i></span>
           <span><b>Church Website</b><small id="hubSiteSmall">www.christumc.cc</small></span>
+        </button>
+        <button class="hub-card" id="hubInstallCard" onclick="openInstallGuide()">
+          <span class="hi" style="background:#EEF2FF; color:#3730A3;"><i class="fa-solid fa-mobile-screen-button"></i></span>
+          <span><b>Save App to Phone</b><small>Open in 1 tap without QR code</small></span>
         </button>
       </div>
     </div>
@@ -1563,6 +1653,49 @@ html[data-skin="a"] .checkin-card { background: linear-gradient(180deg, #FFFDF9 
       <button type="button" class="ropt" onclick="closeRecordSheet(); openGivingLink();"><span class="hi" style="background:#DCFCE7; color:#15803D;"><i class="fa-solid fa-hand-holding-heart"></i></span><span><b>Online Giving</b><small>Give securely via Tithe.ly</small></span><i class="fa-solid fa-chevron-right"></i></button>
     </div>
   </div>
+
+  <!-- Phone App Install Guide Sheet (iPhone & Android) -->
+  <div class="rsheet" id="installGuideSheet" onclick="if(event.target===this)closeInstallGuide()">
+    <div class="rsheet-box">
+      <div class="grab"></div>
+      <h3><i class="fa-solid fa-mobile-screen-button" style="color:var(--primary-navy); margin-right:6px;"></i>Save App to Home Screen</h3>
+      <p>Once added, tap the <b>Christ UMC</b> icon every Sunday — no QR code needed, and your family check-in stays saved!</p>
+      <button type="button" id="igNativeBtn" onclick="triggerNativeInstallPrompt()" class="action-btn btn-green" style="display:none; margin-bottom:12px;">
+        <i class="fa-solid fa-download"></i> Install App Now (1 Tap)
+      </button>
+      <div class="ig-tabs">
+        <button type="button" class="ig-tab on" id="igTabIos" onclick="switchInstallGuideTab('ios')"><i class="fa-brands fa-apple"></i> iPhone / iPad</button>
+        <button type="button" class="ig-tab" id="igTabAndroid" onclick="switchInstallGuideTab('android')"><i class="fa-brands fa-android"></i> Android</button>
+      </div>
+      <div id="igBodyIos">
+        <div class="ig-step">
+          <span class="ig-num">1</span>
+          <div class="ig-body">In <b>Safari</b>, tap the <b>Share</b> icon (<i class="fa-solid fa-arrow-up-from-bracket"></i> square with an upward arrow) at the bottom of your screen.</div>
+        </div>
+        <div class="ig-step">
+          <span class="ig-num">2</span>
+          <div class="ig-body">Scroll down the menu and tap <b>"Add to Home Screen"</b> (<i class="fa-regular fa-square-plus"></i>), then tap <b>"Add"</b> in the top-right corner.</div>
+        </div>
+        <p style="font-size:11.5px; color:var(--mute); margin:6px 0 12px; line-height:1.45;">
+          * Apple iPhones never show automatic install popups—using Safari's <b>Add to Home Screen</b> places the Christ UMC app icon directly on your phone!
+        </p>
+      </div>
+      <div id="igBodyAndroid" style="display:none;">
+        <div class="ig-step">
+          <span class="ig-num">1</span>
+          <div class="ig-body">In <b>Chrome</b> (or Samsung Internet), tap the <b>Menu</b> icon (<b>&#8942;</b> three dots in the top-right corner).</div>
+        </div>
+        <div class="ig-step">
+          <span class="ig-num">2</span>
+          <div class="ig-body">Tap <b>"Install app"</b> or <b>"Add to Home screen"</b>, then tap <b>Install</b>.</div>
+        </div>
+        <p style="font-size:11.5px; color:var(--mute); margin:6px 0 12px; line-height:1.45;">
+          * If you scanned the QR code inside an in-app scanner, tap <b>Open in Chrome</b> first so the Install button appears.
+        </p>
+      </div>
+      <button type="button" onclick="closeInstallGuide()" class="action-btn" style="background:#EDF2F7; color:var(--primary-navy); padding:11px;">Got It</button>
+    </div>
+  </div>
 </div>
 
 <!-- Full-screen Image Viewer -->
@@ -1680,9 +1813,15 @@ let currentViewerIdx = 0;
 let isHistoryView = false;
 
 const store = /*STORE_START*/{
-  "deploymentTimestamp": 1795600000000,
+  "deploymentTimestamp": 1795610000000,
   "reportEmail": "beatuifulchina2010@gmail.com",
   "reportHour": "13",
+  "welcomeAlertEmails": "beatuifulchina2010@gmail.com",
+  "autoWelcomeGuest": true,
+  "welcomeEmailSubject": "Welcome to Christ United Methodist Church!",
+  "welcomeEmailBody": "Thank you so much for worshiping with us at Christ United Methodist Church! It was truly a blessing to have you with us.\n\nAt Christ UMC, our mission is simple: Gather · Grow · Go. Whether you are exploring faith, looking for a church home, or new to the Rockford area, there is a place for you and your family here.\n\nIf you have any questions or would enjoy grabbing a cup of coffee with one of our pastors, simply reply to this email or reach our church office at (815) 399-5910.\n\nGrace and peace,\nPastoral Team · Christ United Methodist Church\nwww.christumc.cc",
+  "pastorPrayerEmails": "beatuifulchina2010@gmail.com",
+  "prayerTeamEmails": "",
   "churchName": "Christ United Methodist Church",
   "churchMotto": "Gather · Grow · Go",
   "homepageLink": "https://www.christumc.cc",
@@ -2299,6 +2438,10 @@ function cleanDeployment(root) {
   if (app) { app.setAttribute("data-tab", "home"); app.classList.remove("is-admin"); }
   const rs = root.querySelector("#recordSheet");
   if (rs) rs.classList.remove("open");
+  const ig = root.querySelector("#installGuideSheet");
+  if (ig) ig.classList.remove("open");
+  const ib = root.querySelector("#installAppBanner");
+  if (ib) ib.style.display = "none";
   const ps = root.querySelector("#panel-sermon");
   if (ps) ps.setAttribute("data-seg", "bible");
   root.querySelectorAll("#sermonSeg button").forEach((n) => n.classList.toggle("on", n.dataset.seg === "bible"));
@@ -2358,7 +2501,9 @@ function loadStorage() {
       "sermonTitle", "preacher", "summary", "questions", "hymnLyrics", "musicSheets", "bulletinHistory",
       "badgeEnabled", "serviceOptions", "churchName", "churchMotto", "homepageLink", "givingLink",
       "givingSubtext", "youtubeLink", "pdfLink", "ccliNumber", "adminPassword", "specialRecord",
-      "uiSkin", "seasonMode", "seasonTagline", "seasonTaglineMode", "logoData", "sermonBanner"
+      "uiSkin", "seasonMode", "seasonTagline", "seasonTaglineMode", "logoData", "sermonBanner",
+      "globalWebhook", "reportEmail", "reportHour", "welcomeAlertEmails", "autoWelcomeGuest",
+      "welcomeEmailSubject", "welcomeEmailBody", "pastorPrayerEmails", "prayerTeamEmails"
     ];
     expiredAdminKeys.forEach((k) => bulletinStorage.removeItem("cumc_" + k));
     bulletinStorage.setItem("cumc_deploymentTimestamp", String(currentFileTimestamp));
@@ -2665,6 +2810,7 @@ function updateViews() {
   renderNewBadges();
   applySkin();
   renderHomeHero();
+  renderInstallBanner();
   renderHomeCheckIn();
   renderHomeNews();
   renderRecordsHub();
@@ -2704,6 +2850,13 @@ function initValues() {
   setVal("input-seasonTagline", store.seasonTagline || "");
   setVal("input-reportEmail", store.reportEmail || "beatuifulchina2010@gmail.com");
   setVal("input-reportHour", store.reportHour || "13");
+  setVal("input-welcomeAlertEmails", store.welcomeAlertEmails ?? "beatuifulchina2010@gmail.com");
+  const awChk = document.getElementById("input-autoWelcomeGuest");
+  if (awChk) awChk.checked = store.autoWelcomeGuest !== false && store.autoWelcomeGuest !== "false";
+  setVal("input-welcomeEmailSubject", store.welcomeEmailSubject || "Welcome to Christ United Methodist Church!");
+  setVal("input-welcomeEmailBody", store.welcomeEmailBody || "");
+  setVal("input-pastorPrayerEmails", store.pastorPrayerEmails ?? "beatuifulchina2010@gmail.com");
+  setVal("input-prayerTeamEmails", store.prayerTeamEmails || "");
 
   updateViews();
   renderConfessions();
@@ -2815,6 +2968,97 @@ function openRecordSheet() {
 function closeRecordSheet() { document.getElementById("recordSheet").classList.remove("open"); }
 function goRecord(tab) { closeRecordSheet(); switchTab(tab); }
 
+/* Smart PWA App Install Banner & iOS / Android Guide */
+let deferredInstallPrompt = null;
+function isStandaloneApp() {
+  return !!(
+    (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) ||
+    window.navigator.standalone === true
+  );
+}
+function detectMobilePlatform() {
+  const ua = navigator.userAgent || "";
+  if (/iPad|iPhone|iPod/i.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)) return "ios";
+  if (/Android/i.test(ua)) return "android";
+  return "other";
+}
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  renderInstallBanner();
+});
+window.addEventListener("appinstalled", () => {
+  deferredInstallPrompt = null;
+  renderInstallBanner();
+});
+function renderInstallBanner() {
+  const banner = document.getElementById("installAppBanner");
+  const cta = document.getElementById("installBannerCta");
+  const nativeBtn = document.getElementById("igNativeBtn");
+  const hubCard = document.getElementById("hubInstallCard");
+  const standalone = isStandaloneApp();
+  if (hubCard) hubCard.style.display = standalone ? "none" : "flex";
+  if (nativeBtn) nativeBtn.style.display = deferredInstallPrompt ? "block" : "none";
+  if (!banner) return;
+  const dismissed = bulletinStorage.getItem("cumc_installBannerDismissed") === "1";
+  if (standalone || dismissed || isHistoryView) {
+    banner.style.display = "none";
+    return;
+  }
+  if (cta) cta.textContent = deferredInstallPrompt ? "Install" : "How to Add";
+  banner.style.display = "flex";
+}
+function dismissInstallBanner(ev) {
+  if (ev) ev.stopPropagation();
+  bulletinStorage.setItem("cumc_installBannerDismissed", "1");
+  renderInstallBanner();
+}
+async function triggerNativeInstallPrompt() {
+  if (!deferredInstallPrompt) return false;
+  const promptEvent = deferredInstallPrompt;
+  deferredInstallPrompt = null;
+  try {
+    promptEvent.prompt();
+    const res = await promptEvent.userChoice;
+    renderInstallBanner();
+    if (res && res.outcome === "accepted") {
+      closeInstallGuide();
+      return true;
+    }
+  } catch (e) {}
+  renderInstallBanner();
+  return false;
+}
+async function triggerInstallApp() {
+  if (deferredInstallPrompt) {
+    const installed = await triggerNativeInstallPrompt();
+    if (installed) return;
+  }
+  openInstallGuide();
+}
+function switchInstallGuideTab(os) {
+  const isIos = os !== "android";
+  const tIos = document.getElementById("igTabIos");
+  const tAnd = document.getElementById("igTabAndroid");
+  const bIos = document.getElementById("igBodyIos");
+  const bAnd = document.getElementById("igBodyAndroid");
+  if (tIos) tIos.classList.toggle("on", isIos);
+  if (tAnd) tAnd.classList.toggle("on", !isIos);
+  if (bIos) bIos.style.display = isIos ? "block" : "none";
+  if (bAnd) bAnd.style.display = !isIos ? "block" : "none";
+}
+function openInstallGuide() {
+  const plat = detectMobilePlatform();
+  switchInstallGuideTab(plat === "android" ? "android" : "ios");
+  renderInstallBanner();
+  const sheet = document.getElementById("installGuideSheet");
+  if (sheet) sheet.classList.add("open");
+}
+function closeInstallGuide() {
+  const sheet = document.getElementById("installGuideSheet");
+  if (sheet) sheet.classList.remove("open");
+}
+
 /* Font Scaling */
 function syncReaderTools() {
   const r = document.getElementById("readerFont");
@@ -2921,7 +3165,12 @@ function submitConnectCard() {
     email,
     phone,
     interests,
-    notes
+    notes,
+    churchName: store.churchName || "Christ United Methodist Church",
+    welcomeAlertEmails: store.welcomeAlertEmails || "",
+    autoWelcomeGuest: (store.autoWelcomeGuest !== false && store.autoWelcomeGuest !== "false") ? "1" : "0",
+    welcomeEmailSubject: store.welcomeEmailSubject || "",
+    welcomeEmailBody: store.welcomeEmailBody || ""
   });
 
   document.getElementById("input-connectName").value = "";
@@ -2982,7 +3231,10 @@ function saveConfession() {
     prayer,
     grace,
     biblePassage: store.bibleHeading || "",
-    sermonTitle: store.sermonTitle || ""
+    sermonTitle: store.sermonTitle || "",
+    churchName: store.churchName || "Christ United Methodist Church",
+    pastorPrayerEmails: store.pastorPrayerEmails || "",
+    prayerTeamEmails: store.prayerTeamEmails || ""
   });
 
   document.getElementById("input-myPrayer").value = "";
@@ -3045,7 +3297,10 @@ function submitCellRequest() {
     author,
     contact,
     schedule: scheduleStr,
-    text
+    text,
+    churchName: store.churchName || "Christ United Methodist Church",
+    welcomeAlertEmails: store.welcomeAlertEmails || "",
+    pastorPrayerEmails: store.pastorPrayerEmails || ""
   });
 
   document.getElementById("input-cellRequestAuthor").value = "";
@@ -3217,7 +3472,7 @@ function downloadDeploymentFile() {
   a.click();
   document.body.removeChild(a);
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-  alert("Deployment file (index.html) downloaded! Upload it to Cloudflare Pages to publish your updated bulletin.");
+  alert("Deployment file (index.html) downloaded! Upload it to your GitHub Pages repository (docs/index.html) to publish your updated bulletin.");
 }
 
 function createNewBulletin() {
@@ -4193,7 +4448,12 @@ function performOneTapCheckIn() {
     email: entry.email,
     phone: entry.phone,
     address: entry.address,
-    saveRoster: p.status !== "First-Time Guest" ? "1" : "0"
+    saveRoster: p.status !== "First-Time Guest" ? "1" : "0",
+    churchName: store.churchName || "Christ United Methodist Church",
+    welcomeAlertEmails: store.welcomeAlertEmails || "",
+    autoWelcomeGuest: (store.autoWelcomeGuest !== false && store.autoWelcomeGuest !== "false") ? "1" : "0",
+    welcomeEmailSubject: store.welcomeEmailSubject || "",
+    welcomeEmailBody: store.welcomeEmailBody || ""
   });
 
   ciEditingToday = false;
@@ -4463,6 +4723,32 @@ function submitPaperAttendance() {
   lines.forEach((item) => recordPaperSingle(dStr, service, status, item.name, item.count, saveRoster, ageGroup));
   document.getElementById("admPaperNames").value = "";
   refreshAdminAttendance(true);
+}
+
+async function saveEmailAutomationConfig() {
+  const url = (store.globalWebhook || "").trim();
+  store.welcomeAlertEmails = (document.getElementById("input-welcomeAlertEmails").value || "").trim();
+  store.autoWelcomeGuest = !!document.getElementById("input-autoWelcomeGuest").checked;
+  store.welcomeEmailSubject = (document.getElementById("input-welcomeEmailSubject").value || "").trim();
+  store.welcomeEmailBody = (document.getElementById("input-welcomeEmailBody").value || "").trim();
+  store.pastorPrayerEmails = (document.getElementById("input-pastorPrayerEmails").value || "").trim();
+  store.prayerTeamEmails = (document.getElementById("input-prayerTeamEmails").value || "").trim();
+  ["welcomeAlertEmails", "autoWelcomeGuest", "welcomeEmailSubject", "welcomeEmailBody", "pastorPrayerEmails", "prayerTeamEmails"].forEach(saveToStorage);
+  if (!url) {
+    alert("Email routing saved! Paste your Google Sheets Web App URL right above and click this button again to sync with Google Sheets.");
+    return;
+  }
+  await sendToGoogleSheet({
+    type: "automation_config",
+    churchName: store.churchName || "Christ United Methodist Church",
+    welcomeAlertEmails: store.welcomeAlertEmails,
+    autoWelcomeGuest: store.autoWelcomeGuest ? "1" : "0",
+    welcomeEmailSubject: store.welcomeEmailSubject,
+    welcomeEmailBody: store.welcomeEmailBody,
+    pastorPrayerEmails: store.pastorPrayerEmails,
+    prayerTeamEmails: store.prayerTeamEmails
+  });
+  alert("Saved & synced! Instant welcoming emails, Connect Card alerts, and Prayer Request email routing are now active.");
 }
 
 async function saveWeeklyEmailSchedule() {
